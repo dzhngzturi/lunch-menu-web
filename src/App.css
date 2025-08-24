@@ -1,0 +1,428 @@
+/* ===== Reset (малък) ===== */
+html, body { margin: 0; padding: 0; }
+body { overflow-x: hidden; } /* заради .full-bleed банера */
+
+/* ===== Layout ===== */
+.site-shell{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(180deg,#f8fafc 0%,#fff 30%);
+}
+.container{max-width:1100px;margin:0 auto;padding:0 16px;box-sizing:border-box}
+
+.site-header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid #e5e7eb;
+}
+.header-row{display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.brand{font-weight:800;text-decoration:none;color:#0f172a;font-size:1.25rem}
+.nav{display:flex;gap:12px;flex-wrap:wrap}
+.nav a{color:#0f172a;text-decoration:none;padding:6px 10px;border-radius:9999px}
+.nav a:hover{background:#f1f5f9}
+.nav a.active{background:#e2e8f0}
+.nav-admin{border:1px solid #e2e8f0}
+
+.site-main{flex:1;padding:24px 0}
+.site-footer{border-top:1px solid #e5e7eb;background:#f8fafc;color:#334155}
+.footer-row{display:flex;align-items:center;justify-content:space-between;min-height:56px}
+
+.page-loading{padding:24px;text-align:center;opacity:.7}
+
+/* ===== Buttons (public) ===== */
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;text-decoration:none;border:1px solid transparent}
+.btn-primary{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
+.btn-primary:hover{filter:brightness(.95)}
+.btn-outline{background:#fff;color:#0f172a;border-color:#e2e8f0}
+.btn-outline:hover{background:#f1f5f9}
+
+/* ===== HERO (една снимка) ===== */
+.hero{
+  position: relative;
+  background: #0f172a center/cover no-repeat; /* без url() тук */
+  border-radius: 0;
+}
+
+/* Home банер – собствена снимка и височина */
+.hero.home{
+  background-image: url("/banners/home.jpg");
+  height: min(68vh, 620px);
+}
+
+/* full-bleed вече го имаш; за всеки случай: */
+.full-bleed{
+  width:100vw; max-width:100vw;
+  position:relative; left:50%; right:50%;
+  margin-left:-50vw; margin-right:-50vw;
+}
+
+.hero-overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.45) 0%, rgba(0,0,0,.35) 55%, rgba(0,0,0,.25) 100%);
+}
+.hero-inner{
+  position:relative; z-index:2;
+  height:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 16px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; color:#fff;
+}
+.hero-title{ margin:0 0 8px; font-weight:800; font-size:clamp(32px,6vw,56px) }
+.hero-subtitle{ margin:0 0 16px; opacity:.95; font-size:clamp(16px,2.5vw,20px) }
+
+/* ===== Public menu visuals ===== */
+.menu-hero{text-align:center;font-weight:800;color:#0f172a;margin:8px 0 12px;font-size:clamp(28px,5vw,48px)}
+.section{margin:32px 0}
+.section h2{text-align:center;color:#0f172a;margin:0 0 16px;font-size:clamp(20px,3.5vw,28px)}
+
+/* Пилчета по категории (ако ги ползваш) */
+.pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0 20px}
+.pills a{text-decoration:none;color:#0f172a;background:#fff;border:1px solid #e2e8f0;padding:8px 12px;border-radius:9999px}
+.pills a:hover{background:#f1f5f9}
+
+/* Карти с ястия */
+.cards-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.dish-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(2,8,23,.06);transition:transform .18s ease, box-shadow .18s ease}
+.dish-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(2,8,23,.08)}
+.dish-media{aspect-ratio:4/3;background:#f1f5f9}
+.dish-media img{width:100%;height:100%;object-fit:cover;display:block}
+.dish-body{padding:12px 14px}
+.dish-title{margin:0 0 6px;color:#0f172a;font-weight:700}
+.dish-desc{color:#475569;min-height:2.4em;line-height:1.2;margin:0 0 10px;font-size:.95rem}
+.dish-footer{display:flex;justify-content:space-between;align-items:center}
+.price{font-weight:800}
+
+/* ===== Contact page ===== */
+.contact-grid{display:grid;gap:20px;grid-template-columns:1.1fr .9fr}
+.contact-form{
+  background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;
+  box-shadow:0 6px 18px rgba(2,8,23,.05);
+}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.form-group input,.form-group textarea{
+  padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;width:100%;box-sizing:border-box;
+}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.contact-info h3{margin:0 0 6px}
+.contact-info h4{margin:16px 0 6px}
+.hours{margin:0;padding-left:18px}
+.map-embed{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb}
+.map-embed iframe{width:100%;height:280px;border:0;display:block}
+
+
+/* --- Contact form padding & spacing --- */
+.contact-grid{
+  gap: 24px;           /* малко по-голямо разстояние между формата и инфото */
+  margin-top: 16px;    /* отстояние под банера */
+}
+
+.contact-form{
+  padding: 24px 24px 20px;   /* ВЪТРЕШЕН PADDING */
+  border-radius: 16px;       /* малко по-меки ъгли */
+}
+@media (min-width: 900px){
+  .contact-form{ padding: 28px; }   /* на десктоп още малко "въздух" */
+}
+
+/* полетата да имат комфортен padding */
+.form-group{ gap: 8px; margin-bottom: 14px; }
+.form-group input,
+.form-group textarea{
+  padding: 12px 14px;
+}
+
+/* приятен фокус при писане */
+.form-group input:focus,
+.form-group textarea:focus{
+  outline: 2px solid #0ea5e9;
+  outline-offset: 1px;
+  border-color: #0ea5e9;
+}
+
+/* бутонът да не лепне за полето */
+.contact-form .btn{ margin-top: 8px; }
+
+/* ===== Image Carousel ===== */
+.carousel{
+  position:relative; border-radius:18px; overflow:hidden;
+  background:#0f172a; /* фон докато се зареди снимка */
+  box-shadow:0 10px 28px rgba(2,8,23,.12);
+}
+.carousel-viewport{ width:100%; height: min(60vh, 520px); }
+.carousel-track{
+  display:flex; width:100%; height:100%;
+  transition: transform .45s ease;
+}
+.carousel-slide{
+  position:relative; min-width:100%; height:100%; margin:0;
+}
+.carousel-slide img{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+.carousel-caption{
+  position:absolute; inset:auto 0 0 0; padding:16px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 80%);
+  color:#fff;
+}
+.carousel-caption h3{ margin:0 0 4px; font-size:clamp(18px,2.6vw,24px) }
+.carousel-caption p{ margin:0; opacity:.9 }
+
+/* arrows */
+.carousel-arrow{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:38px; height:38px; border-radius:999px; border:1px solid rgba(255,255,255,.6);
+  background:rgba(0,0,0,.35); color:#fff; cursor:pointer;
+  display:grid; place-items:center; font-size:22px; line-height:1;
+}
+.carousel-arrow:hover{ background:rgba(0,0,0,.5) }
+.carousel-arrow.left{ left:10px }
+.carousel-arrow.right{ right:10px }
+
+/* dots */
+.carousel-dots{
+  position:absolute; left:0; right:0; bottom:10px;
+  display:flex; gap:8px; justify-content:center;
+}
+.carousel-dots .dot{
+  width:10px; height:10px; border-radius:999px; border:0;
+  background:rgba(255,255,255,.55); cursor:pointer;
+}
+.carousel-dots .dot.active{ background:#fff; width:22px; border-radius:999px }
+
+@media (max-width: 680px){
+  .carousel-viewport{ height: 44vh; }
+}
+
+
+/* ===== Responsive ===== */
+@media (max-width:900px){
+  .contact-grid{grid-template-columns:1fr}
+  .form-row-2{grid-template-columns:1fr}
+}
+@media (max-width:680px){
+  .header-row,.footer-row{padding:8px 0}
+  .cards-grid{gap:12px}
+  .hero{height:52vh}
+}
+
+
+/* ===== Multi item Carousel (стрелки + точки) ===== */
+.mc{position:relative}
+.mc-head{text-align:center;margin:8px 0 18px}
+.mc-kicker{letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:4px}
+.mc-title{margin:0 0 8px;font-size:clamp(24px,4.5vw,42px);color:#0f172a}
+.mc-rule{width:120px;height:2px;background:#0f172a;margin:0 auto;border-radius:2px;opacity:.2}
+
+.mc-wrap{position:relative}
+.mc-viewport{overflow:hidden}
+.mc-track{display:flex;transition:transform .45s ease;will-change:transform}
+.mc-item{min-height:100%}
+
+/* стрелки */
+.mc-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:40px;height:40px;border-radius:999px;border:1px solid rgba(0,0,0,.15);
+  background:#fff;box-shadow:0 4px 12px rgba(2,8,23,.12);
+  cursor:pointer;display:grid;place-items:center;font-size:22px;
+}
+.mc-arrow.left{left:8px}
+.mc-arrow.right{right:8px}
+.mc-arrow:hover{filter:brightness(.95)}
+
+/* точки */
+.mc-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.mc-dots .dot{width:10px;height:10px;border-radius:999px;border:0;background:#cbd5e1;cursor:pointer}
+.mc-dots .dot.active{background:#0f172a;width:22px;border-radius:999px}
+
+/* примерни карти (ползват твоите dish-card) */
+.mc .dish-card{height:100%}
+.mc .dish-media{aspect-ratio:4/3}
+.mc .dish-title{text-align:center}
+
+
+/* 1) Когато full-bleed каруселът е ПЪРВИ елемент в .site-main – махни падинга отгоре */
+.site-main > .carousel.full-bleed:first-child{
+  margin-top: -24px; /* компенсира .site-main{padding:24px 0} */
+}
+
+/* 2) Full-bleed вариант без заобляне и сенки */
+.carousel.full-bleed,
+.carousel.full-bleed .carousel-slide,
+.carousel.full-bleed .carousel-slide img{
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 3) Ако го слагаш в .section – направи секцията „плътна“ */
+.section--flush{ margin: 0; }
+
+/* ===== Testimonials (Отзиви) ===== */
+.testimonials{
+  position:relative;
+  width:100%;
+  background:transparent;
+  color:#fff;
+}
+
+/* Testimonials full-bleed: без падинг и без заобляне */
+.testimonials.full-bleed{
+  width: 100vw;
+  max-width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* Слайдът вътре да е без закръглени ъгли */
+.testimonials.full-bleed .t-slide{
+  border-radius: 0;
+}
+
+/* Стрелките да стоят близо до ръба */
+.testimonials.full-bleed .t-arrow.left{  left: 10px; }
+.testimonials.full-bleed .t-arrow.right{ right: 10px; }
+
+/* Точките – както си бяха */
+.testimonials.full-bleed .t-dots{ bottom: 14px; }
+
+.testimonials .t-viewport{
+  overflow:hidden;
+  height: var(--t-h, min(70vh, 640px));
+}
+.testimonials .t-track{
+  display:flex; height:100%;
+  transition: transform .5s ease;
+  will-change: transform;
+}
+.testimonials .t-slide{
+  position:relative; min-width:100%; height:100%; margin:0;
+}
+.testimonials .t-bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; filter:brightness(.7);
+}
+.testimonials .t-overlay{
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.25), rgba(0,0,0,.55) 70%);
+}
+.testimonials .t-body{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:0 18px; max-width:1100px; margin:0 auto; z-index:2;
+}
+.t-kicker{ letter-spacing:.18em; text-transform:uppercase; opacity:.85; margin-bottom:10px }
+.t-title{ margin:0 0 18px; font-weight:800; font-size:clamp(22px,4.5vw,40px) }
+.t-quote{
+  margin:0 auto 18px; max-width:980px;
+  font-size:clamp(16px,2.4vw,22px); line-height:1.6; opacity:.98;
+}
+.t-author{ font-weight:700; letter-spacing:.02em; opacity:.95 }
+
+.t-arrow{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:44px; height:44px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.65);
+  background:rgba(0,0,0,.35); color:#fff; font-size:24px;
+  display:grid; place-items:center; cursor:pointer; z-index:3;
+}
+.t-arrow:hover{ background:rgba(0,0,0,.5) }
+.t-arrow.left{ left:14px }
+.t-arrow.right{ right:14px }
+
+.t-dots{
+  position:absolute; left:0; right:0; bottom:16px; z-index:3;
+  display:flex; gap:10px; justify-content:center;
+}
+.t-dots .dot{
+  width:10px; height:10px; border-radius:999px; border:0; cursor:pointer;
+  background:rgba(255,255,255,.55);
+}
+.t-dots .dot.active{ background:#fff; width:24px }
+
+@media (max-width: 680px){
+  .testimonials .t-viewport{ height: 54vh; }
+}
+
+@media (min-width: 900px) {
+  .site-main > * + * { margin-top: 24px; } /* или 32px */
+}
+
+/* === ГЛОБАЛЕН spacing МЕЖДУ СЕКЦИИТЕ === */
+
+/* 0) За да няма „тъмна лента“ и да не поглъща margin-и */
+.site-main { padding-top: 0 !important; padding-bottom: 0 !important; }
+
+/* 1) Нулираме индивидуалните марджини, ако някъде са зададени */
+.section { margin: 0 !important; }
+
+/* 2) Даваме 20px разстояние между ВСИЧКИ преки деца на .site-main */
+.site-main > * + * { 
+  margin-top: 20px !important;
+}
+
+/* 3) Full-bleed елeменти да вземат същото разстояние отгоре */
+.testimonials.full-bleed,
+.carousel.full-bleed {
+  margin-top: 20px !important;  /* за всеки случай, дори да не са директен sibling */
+}
+
+/* помощни класове при нужда */
+.no-gap { margin-top: 0 !important; }
+.gap-32 { margin-top: 32px !important; }
+
+/* ==== Public menu table ==== */
+.menu-table-wrapper { width:100%; overflow-x:auto; }
+.menu-table {
+  width:100%;
+  border-collapse: collapse;
+  min-width: 420px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+}
+.menu-table th, .menu-table td {
+  padding:10px 12px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+}
+.menu-table thead th { background:#f8fafc; font-weight:700; }
+.menu-table td .muted { color:#64748b; font-size:.95rem; margin-top:2px; }
+.menu-table th.right, .menu-table td.right { text-align:right; white-space:nowrap; }
+
+@media (max-width:680px){
+  .menu-table { border-radius:10px; }
+}
+
+/* Пилчета да могат да се скролват хоризонтално */
+.pills.pills-scroll { overflow:auto; padding-bottom:4px; }
+.pills a.active { background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
+
+/* Дропдаунът за мобилно */
+.cat-picker { display:none; margin: 8px 0 12px; }
+.cat-picker select {
+  width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px;
+  background:#fff; color:#0f172a;
+}
+
+@media (max-width: 680px){
+  .pills { display:none; }
+  .cat-picker { display:block; }
+}
+
+/* Табличният изглед за напитки (ако не е сложен вече) */
+.menu-table-wrapper { width:100%; overflow-x:auto; }
+.menu-table {
+  width:100%; border-collapse: collapse; min-width:420px; background:#fff;
+  border:1px solid #e5e7eb; border-radius:12px;
+}
+.menu-table th, .menu-table td { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
+.menu-table thead th { background:#f8fafc; font-weight:700; }
+.menu-table td .muted { color:#64748b; font-size:.95rem; margin-top:2px; }
+.menu-table th.right, .menu-table td.right { text-align:right; white-space:nowrap; }
