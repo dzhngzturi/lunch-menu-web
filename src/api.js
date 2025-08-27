@@ -1,38 +1,49 @@
-// src/api.js
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, ''),
-  // ако ти трябва сесия/cookies:
-  // withCredentials: true,
+  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api',
+  headers: { Accept: 'application/json' }
 });
 
-// ------- Категории -------
-export const getCategories   = () => api.get('/api/categories');
-export const createCategory  = (payload) => api.post('/api/categories', payload);
-export const updateCategory  = (id, payload) => api.put(`/api/categories/${id}`, payload);
-export const deleteCategory  = (id) => api.delete(`/api/categories/${id}`);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// ------- Ястия -------
-export const getDishes = (params = {}) =>
-  api.get('/api/dishes', { params });
+// Auto logout при 401/419
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const status = err?.response?.status;
+    if (status === 401 || status === 419) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new Event('auth-changed'));
+      if (!location.pathname.startsWith('/login')) {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(err);
+  }
+);
 
-export const getDish = (id) =>
-  api.get(`/api/dishes/${id}`);
+// Auth
+export const login = (email, password) => api.post('/login', { email, password });
+export const logout = () => api.post('/logout');
 
-export const createDish = (formData) =>
-  api.post('/api/dishes', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+// Категории
+export const getCategories = () => api.get('/categories');
+export const createCategory = (payload) => api.post('/categories', payload);
+export const updateCategory = (id, payload) => api.put(`/categories/${id}`, payload);
+export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 
-export const updateDish = (id, formData) =>
-  api.post(`/api/dishes/${id}?_method=PUT`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-
-export const deleteDish = (id) =>
-  api.delete(`/api/dishes/${id}`);
-
-// По избор: помощни обвивки
-export const getLunchDishes   = () => getDishes({ menu_type: 'lunch' });
-export const getRegularDishes = () => getDishes({ menu_type: 'regular' });
+// Ястия
+export const getDishes = (params = {}) => api.get('/dishes', { params });
+export const createDish = (formData) => api.post('/dishes', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+export const updateDish = (id, formData) => api.post(`/dishes/${id}?_method=PUT`, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+export const deleteDish = (id) => api.delete(`/dishes/${id}`);

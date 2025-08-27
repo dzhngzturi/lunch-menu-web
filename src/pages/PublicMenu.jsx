@@ -5,7 +5,7 @@ import PageHero from "../components/PageHero";
 export default function PublicMenu() {
   const [cats, setCats] = useState([]);
   const [dishes, setDishes] = useState([]);
-  const [openId, setOpenId] = useState(null); // ← избраната категория (null = нищо)
+  const [openId, setOpenId] = useState(null); // null = показвай всички
 
   useEffect(() => {
     Promise.all([
@@ -15,8 +15,7 @@ export default function PublicMenu() {
       const catsArr = c.data?.data ?? [];
       setCats(catsArr);
       setDishes(d.data?.data ?? []);
-
-      // ако искаш първата да е избрана по подразбиране:
+      // ако искаш първата да е избрана:
       // if (catsArr.length) setOpenId(catsArr[0].id);
     });
   }, []);
@@ -44,10 +43,12 @@ export default function PublicMenu() {
       .filter(c => c.items.length > 0)
   , [cats, dishes]);
 
-  const selectedCat = useMemo(
-    () => grouped.find(c => Number(c.id) === Number(openId)) || null,
-    [grouped, openId]
-  );
+  // ВИДИМИ КАТЕГОРИИ: всички (openId=null) или само избраната
+  const visibleCats = useMemo(() => {
+    if (openId == null) return grouped;
+    const one = grouped.find(c => Number(c.id) === Number(openId));
+    return one ? [one] : [];
+  }, [grouped, openId]);
 
   return (
     <>
@@ -59,8 +60,21 @@ export default function PublicMenu() {
       />
 
       <div className="container section">
-        {/* ПИЛЧЕТА – на десктоп */}
+
+        {/* ПИЛЧЕТА – desktop */}
         <div className="pills pills-scroll">
+          <a
+            href="#top"
+            className={openId == null ? "active" : ""}
+            onClick={(e) => {
+              e.preventDefault();
+              setOpenId(null);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            Всички
+          </a>
+
           {grouped.map(c => (
             <a
               key={c.id}
@@ -78,76 +92,73 @@ export default function PublicMenu() {
           ))}
         </div>
 
-        {/* ДРОПДАУН – на мобилно */}
+        {/* ДРОПДАУН – mobile */}
         <div className="cat-picker">
           <select
             value={openId ?? ""}
             onChange={(e) => setOpenId(e.target.value ? Number(e.target.value) : null)}
           >
-            <option value="">-- Изберете категория --</option>
+            <option value="">Всички категории</option>
             {grouped.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
         </div>
 
-        {/* Ако няма избрана категория */}
-        {!selectedCat && (
+        {/* ВИДИМИ КАТЕГОРИИ */}
+        {visibleCats.length === 0 ? (
           <p style={{ textAlign: "center", opacity: .7, marginTop: 8 }}>
-            Моля, изберете категория отгоре.
+            Няма продукти за показване.
           </p>
-        )}
+        ) : (
+          visibleCats.map(cat => (
+            <section key={cat.id} id={`c-${cat.id}`} className="section">
+              <h2 style={{ textAlign: "center" }}>{cat.name}</h2>
 
-        {/* Избраната категория */}
-        {selectedCat && (
-          <section id={`c-${selectedCat.id}`} className="section">
-            <h2 style={{ textAlign: "center" }}>{selectedCat.name}</h2>
-
-            {isTableCategory(selectedCat) ? (
-              /* ===== Таблица за напитки ===== */
-              <div className="menu-table-wrapper">
-                <table className="menu-table">
-                  <thead>
-                    <tr>
-                      <th>Продукт</th>
-                      <th className="right">Цена</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedCat.items.map(item => (
-                      <tr key={item.id}>
-                        <td>
-                          <strong>{item.name}</strong>
-                          {item.description && (
-                            <div className="muted">{item.description}</div>
-                          )}
-                        </td>
-                        <td className="right">{Number(item.price).toFixed(2)} лв.</td>
+              {isTableCategory(cat) ? (
+                /* ===== Таблица ===== */
+                <div className="menu-table-wrapper">
+                  <table className="menu-table">
+                    <thead>
+                      <tr>
+                        <th>Продукт</th>
+                        <th className="right">Цена</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              /* ===== Карти ===== */
-              <div className="cards-grid">
-                {selectedCat.items.map(item => (
-                  <article key={item.id} className="dish-card">
-                    <div className="dish-media">
-                      {item.image && <img src={storageUrl + item.image} alt={item.name} />}
-                    </div>
-                    <div className="dish-body">
-                      <h3 className="dish-title">{item.name}</h3>
-                      {item.description && <p className="dish-desc">{item.description}</p>}
-                      <div className="dish-footer">
-                        <span className="price">{Number(item.price).toFixed(2)} лв.</span>
+                    </thead>
+                    <tbody>
+                      {cat.items.map(item => (
+                        <tr key={item.id}>
+                          <td>
+                            <strong>{item.name}</strong>
+                            {item.description && <div className="muted">{item.description}</div>}
+                          </td>
+                          <td className="right">{Number(item.price).toFixed(2)} лв.</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                /* ===== Карти ===== */
+                <div className="cards-grid">
+                  {cat.items.map(item => (
+                    <article key={item.id} className="dish-card">
+                      <div className="dish-media">
+                        {item.image && <img src={storageUrl + item.image} alt={item.name} />}
                       </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
+                      <div className="dish-body">
+                        <h3 className="dish-title">{item.name}</h3>
+                        {item.description && <p className="dish-desc">{item.description}</p>}
+                        <div className="dish-footer">
+                          <span className="price">{Number(item.price).toFixed(2)} лв.</span>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          ))
         )}
       </div>
     </>

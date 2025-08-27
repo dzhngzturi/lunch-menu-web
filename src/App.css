@@ -11,23 +11,76 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 }
 .container{max-width:1100px;margin:0 auto;padding:0 16px;box-sizing:border-box}
 
-.site-header{
-  position:sticky; top:0; z-index:50;
-  background:rgba(255,255,255,.85);
-  backdrop-filter:saturate(180%) blur(10px);
-  border-bottom:1px solid #e5e7eb;
+/* ===== Header layout ===== */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* раздалечава логото и навигацията */
+  gap: 16px;
 }
-.header-row{display:flex;align-items:center;justify-content:space-between;min-height:56px}
-.brand{font-weight:800;text-decoration:none;color:#0f172a;font-size:1.25rem}
-.nav{display:flex;gap:12px;flex-wrap:wrap}
-.nav a{color:#0f172a;text-decoration:none;padding:6px 10px;border-radius:9999px}
-.nav a:hover{background:#f1f5f9}
-.nav a.active{background:#e2e8f0}
-.nav-admin{border:1px solid #e2e8f0}
+
+.brand {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #111;
+  flex-shrink: 0; /* логото да стои стабилно вляво */
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;   /* центрираме линковете вътре */
+  flex: 1;                   /* взема останалото място */
+}
+
+.nav a {
+  color: #0f172a;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  transition: 0.15s ease;
+}
+.nav a:hover { background: #f1f5f9; }
+.nav a.active { background: #e2e8f0; }
+
+
+.nav-spacer{ flex:1; }.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* раздалечава логото и навигацията */
+  gap: 16px;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #111;
+  flex-shrink: 0; /* логото да стои стабилно вляво */
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;   /* центрираме линковете вътре */
+  flex: 1;                   /* взема останалото място */
+}
+
+.nav a {
+  color: #0f172a;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  transition: 0.15s ease;
+}
+.nav a:hover { background: #f1f5f9; }
+.nav a.active { background: #e2e8f0; }
 
 .site-main{flex:1;padding:24px 0}
 .site-footer{border-top:1px solid #e5e7eb;background:#f8fafc;color:#334155}
-.footer-row{display:flex;align-items:center;justify-content:space-between;min-height:56px}
 
 .page-loading{padding:24px;text-align:center;opacity:.7}
 
@@ -51,7 +104,6 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   height: min(68vh, 620px);
 }
 
-/* full-bleed вече го имаш; за всеки случай: */
 .full-bleed{
   width:100vw; max-width:100vw;
   position:relative; left:50%; right:50%;
@@ -97,55 +149,91 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 .dish-footer{display:flex;justify-content:space-between;align-items:center}
 .price{font-weight:800}
 
-/* ===== Contact page ===== */
-.contact-grid{display:grid;gap:20px;grid-template-columns:1.1fr .9fr}
-.contact-form{
-  background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;
-  box-shadow:0 6px 18px rgba(2,8,23,.05);
-}
-.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.form-group input,.form-group textarea{
-  padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;width:100%;box-sizing:border-box;
-}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.contact-info h3{margin:0 0 6px}
-.contact-info h4{margin:16px 0 6px}
-.hours{margin:0;padding-left:18px}
-.map-embed{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb}
-.map-embed iframe{width:100%;height:280px;border:0;display:block}
 
+/* Contact */
 
-/* --- Contact form padding & spacing --- */
-.contact-grid{
-  gap: 24px;           /* малко по-голямо разстояние между формата и инфото */
-  margin-top: 16px;    /* отстояние под банера */
+/* Contact band */
+.contact-band {
+  background: #171a1f;
+  color: #fff;
+  padding: 60px 0;
+  margin-bottom: 40px; /* <- добавя разстояние след лентата */
 }
 
-.contact-form{
-  padding: 24px 24px 20px;   /* ВЪТРЕШЕН PADDING */
-  border-radius: 16px;       /* малко по-меки ъгли */
+/* full-bleed: фонът излиза извън контейнера */
+.full-bleed{
+  position:relative;
+  left:50%;
+  right:50%;
+  margin-left:-50vw;
+  margin-right:-50vw;
+  width:100vw;
 }
-@media (min-width: 900px){
-  .contact-form{ padding: 28px; }   /* на десктоп още малко "въздух" */
-}
-
-/* полетата да имат комфортен padding */
-.form-group{ gap: 8px; margin-bottom: 14px; }
-.form-group input,
-.form-group textarea{
-  padding: 12px 14px;
-}
-
-/* приятен фокус при писане */
-.form-group input:focus,
-.form-group textarea:focus{
-  outline: 2px solid #0ea5e9;
-  outline-offset: 1px;
-  border-color: #0ea5e9;
+/* вътрешна решетка */
+.contact-band__grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  text-align: center;
 }
 
-/* бутонът да не лепне за полето */
-.contact-form .btn{ margin-top: 8px; }
+@media (min-width: 992px) {
+  .contact-band__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .contact-band__item + .contact-band__item {
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+.contact-band__item { padding: 0 24px; }
+
+.contact-band__icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px;
+  border: 2px solid rgba(255,255,255,0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.contact-band__title {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  margin-bottom: 10px;
+}
+
+.contact-band__text {
+  margin: 4px 0;
+  line-height: 1.6;
+  opacity: .9;
+}
+
+/* Картата – full width */
+.contact-map {
+  padding: 0;
+  margin: 40px 0;
+  background: transparent;
+}
+
+.contact-map iframe {
+  display: block;
+  width: 100%;
+  height: 420px;
+  border: 0;
+  border-radius: 0;
+}
+
+
 
 /* ===== Image Carousel ===== */
 .carousel{
@@ -370,7 +458,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 /* 3) Full-bleed елeменти да вземат същото разстояние отгоре */
 .testimonials.full-bleed,
 .carousel.full-bleed {
-  margin-top: 20px !important;  /* за всеки случай, дори да не са директен sibling */
+  margin-top: 40px !important;  /* за всеки случай, дори да не са директен sibling */
 }
 
 /* помощни класове при нужда */
@@ -426,3 +514,461 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 .menu-table thead th { background:#f8fafc; font-weight:700; }
 .menu-table td .muted { color:#64748b; font-size:.95rem; margin-top:2px; }
 .menu-table th.right, .menu-table td.right { text-align:right; white-space:nowrap; }
+
+
+/* ---------- Auth (Login) ---------- */
+
+.auth-wrap{
+  min-height: calc(100dvh - 72px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(1200px 400px at 50% -10%, rgba(37,99,235,.06), transparent 60%),
+    linear-gradient(180deg, #f8fafc 0%, #ffffff 70%);
+}
+
+.auth-card{
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 18px 56px rgba(2,8,23,.14);
+  padding: 28px 24px 30px;
+}
+
+.auth-title{
+  margin: 0 0 6px;
+  font-size: clamp(22px, 3.6vw, 28px);
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: #0f172a;
+}
+
+.auth-sub{
+  margin: 0 0 16px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.auth-form{ display: grid; gap: 14px; }
+
+.field > span{
+  display: inline-block;
+  margin: 8px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: #334155;
+  text-transform: uppercase;
+}
+
+.input{
+  display: flex; align-items: center; gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: .2s border-color, .2s box-shadow, .2s background;
+}
+.input:focus-within{
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+  background: #fff;
+}
+.input input{
+  border: 0; outline: 0; background: transparent;
+  width: 100%;
+  font-size: 16px; color: #0f172a;
+}
+
+.i{
+  inline-size: 18px; block-size: 18px; opacity: .75;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 18px 18px; mask-size: 18px 18px;
+}
+.i-mail{ -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5Z"/></svg>'); mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5Z"/></svg>');
+}
+.i-lock{ -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M17 8V7a5 5 0 1 0-10 0v1H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2Zm-8 0V7a3 3 0 0 1 6 0v1H9Z"/></svg>'); mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M17 8V7a5 5 0 1 0-10 0v1H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2Zm-8 0V7a3 3 0 0 1 6 0v1H9Z"/></svg>');
+}
+
+.eye{
+  border: 0; background: transparent; cursor: pointer;
+  font-size: 16px; opacity: .7;
+}
+.eye:hover{ opacity: 1; }
+
+.alert{
+  padding: 10px 12px; border-radius: 12px; font-size: 14px;
+}
+.alert.error{ background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
+
+.login-row{ display: flex; align-items: center; gap: 10px; margin: 2px 0 6px; }
+.login-row .spacer{ flex: 1; }
+.chip{
+  border: 1px solid #cbd5e1; background: #f8fafc;
+  border-radius: 999px; padding: 6px 10px; font-size: 12px; cursor: pointer;
+}
+.chip:hover{ background: #fff; }
+
+.muted{ color: #64748b; text-decoration: none; font-size: 14px; }
+.muted:hover{ color: #334155; }
+
+/* ако вече имаш .btn/.btn-primary – това е резервно, иначе се игнорира */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer; border-radius:12px; padding:10px 14px; font-weight:600; }
+.btn-lg{ width:100%; padding:12px 16px; font-size:16px; }
+.btn-primary{ background:#2563eb; color:#fff; }
+.btn-primary:hover{ filter:brightness(.96); }
+.btn-primary:disabled{ opacity:.7; cursor:not-allowed; }
+
+
+
+/* Auth buttons */
+.btn-auth{
+  padding:8px 14px; border-radius:8px; text-decoration:none;
+  background:#0f1320; color:#fff; border:1px solid transparent; transition:.2s;
+}
+.btn-auth:hover{ filter:brightness(1.1); }
+.btn-auth--outline{ background:transparent; color:#0f1320; border-color:#0f1320; }
+.btn-auth--outline:hover{ background:#0f132012; }
+
+.spinner{
+  inline-size:18px; block-size:18px;
+  border: 2px solid #93c5fd; border-top-color: #fff; border-radius:999px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+
+
+/* ===== Burger (mobile) ===== */
+/* header да е най-отгоре */
+.site-header{ position: sticky; top:0; z-index:1000; background:#f2f2f2; }
+
+/* drawer – под хедъра, НЕ го покрива; покрива останалото */
+.mobile-drawer{
+  position:fixed;
+  top: var(--header-h, 56px);
+  left:0; right:0; bottom:0;
+  z-index:900;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(2px);
+  transform: translateY(-8px);
+  opacity:0; pointer-events:none;
+  transition:.18s ease;
+}
+.mobile-drawer.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
+
+.mobile-menu{
+  background:#fff; border-bottom:1px solid #e5e7eb;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  padding:16px; display:grid; gap:8px;
+}
+
+.mobile-menu a{ padding:10px 12px; border-radius:8px; text-decoration:none; color:#111; }
+.mobile-menu a.active{ background:#f0f4ff; }
+
+/* Бутонът (остави си твоите стилове) */
+.nav-toggle{ margin-left:auto; width:42px; height:36px; border:1px solid #cfd4dc; border-radius:8px; background:#fff; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
+.nav-toggle-bar{ width:20px; height:2px; background:#111; display:block; }
+
+@media (max-width:768px){
+  .nav{ display:none; }  /* desktop навигацията се крие на мобилно */
+}
+
+
+/* ===== Main / Footer ===== */
+.site-main{ flex:1; padding:24px 0; }
+.site-footer{ border-top:1px solid #e5e7eb; background:#f8fafc; color:#334155; }
+
+.page-loading{ padding:24px; text-align:center; opacity:.7; }
+
+/* ===== Responsive ===== */
+@media (max-width:768px){
+  .nav{ display:none; }           /* скрий desktop навигацията */
+}
+
+
+/* ===== Footer (стабилна решетка + изолация) ===== */
+.footer{
+  background:#0b0b0b;
+  color:#ddd;
+  padding:48px 0 28px;
+  border-top:1px solid #151515;
+  position:relative;     /* футърът създава свой слой */
+  z-index:2;
+  isolation:isolate;     /* нищо отгоре да не „прозират“ */
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin-inline:auto;
+  padding-inline:16px;
+  display:grid;
+  gap:32px;
+  /* лого | клон | навигация */
+  grid-template-columns: minmax(180px, 1fr) 1fr 0.8fr;
+  align-items:start;
+}
+
+/* Лого + копирайт */
+.footer-logo img{
+  display:block;
+  width:160px;           /* нека е малко и стабилно */
+  height:auto;
+  object-fit:contain;
+  /* ако логото е тъмно – обърни цветовете: */
+  /* filter:brightness(0) invert(1); */
+}
+.footer-copy{
+  margin-top:12px;
+  font-size:.9rem;
+  color:#aaa;
+}
+
+/* Клон/контакти */
+.footer-branch h3,
+.footer-nav h3{
+  margin:0 0 12px;
+  font-size:18px;
+  letter-spacing:.04em;
+  color:#fff;
+}
+.footer-line{
+  margin:6px 0;
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+}
+.footer a{ color:#ddd; text-decoration:none; }
+.footer a:hover{ color:#fff; }
+
+/* Социалки */
+.footer-social{ margin-top:12px; display:flex; gap:12px; }
+.footer-social a{
+  display:inline-flex; width:32px; height:32px;
+  border-radius:999px; align-items:center; justify-content:center;
+  background:#111; color:#ddd;
+}
+.footer-social a:hover{ background:#161616; color:#fff; }
+
+/* Дясна колона – навигация */
+.footer-nav nav{ display:flex; flex-direction:column; gap:8px; }
+.footer-nav a{ padding:6px 0; }
+.footer-nav a.active{ color:#fff; font-weight:600; }
+.footer-nav a.admin-link{
+  border:1px solid #333; border-radius:12px; padding:6px 10px; width:fit-content;
+}
+.footer-nav a.admin-link:hover{ background:#151515; }
+
+
+.to-top{
+  position:fixed; right:18px; bottom:18px; width:40px; height:40px;
+  border-radius:999px; background:#0d6efd; color:#fff; border:0;
+  box-shadow:0 4px 18px rgba(13,110,253,.4); cursor:pointer;
+}
+
+/* Мобилна решетка */
+@media (max-width: 960px){
+  .footer-inner{ grid-template-columns:1fr; }
+  .footer-nav{ margin-top:12px; }
+}
+
+
+/* Единен тъмен цвят за банера на Меню + футър */
+:root{
+  /* нагласи този hex да е 1:1 с цвета на твоя меню банер */
+  --brand-navy: #0f1926;           /* <- ако е различен, смени го */
+  --brand-navy-contrast: #ffffff;  /* контрастен текст (бял) */
+}
+
+/* Банерът на страницата Меню (ако имаш отделен клас за него) */
+.menu-hero,
+.hero--menu,
+.page-hero--menu {
+  background: var(--brand-navy) !important;
+  color: var(--brand-navy-contrast);
+}
+
+/* Футър – същият цвят като меню банера */
+.footer{
+  background: var(--brand-navy);
+  color: var(--brand-navy-contrast);
+  border-top: none;    
+  margin-top: 40px;
+}
+
+/* Линкове и икони във футъра – светли */
+.footer a{ color: var(--brand-navy-contrast); opacity: .9; }
+.footer a:hover{ opacity: 1; }
+.footer i, .footer svg{ color: var(--brand-navy-contrast); fill: var(--brand-navy-contrast); }
+
+/* „Админ“ чип в футъра */
+.footer .admin-link{
+  border: 1px solid rgba(255,255,255,.35);
+  background: transparent;
+  color: var(--brand-navy-contrast);
+}
+.footer .admin-link:hover{
+  background: rgba(255,255,255,.08);
+}
+
+/* Ако виждаш тънка бяла ивица над футъра – това я прикрива */
+.section-prefooter,
+.pre-footer,
+.footer-spacer{
+  background: var(--brand-navy) !important;
+}
+
+
+
+.spacer {
+  height: 40px;
+}
+
+/* Секции */
+.about-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.about-section.reverse {
+  direction: rtl; /* за обръщане */
+}
+.about-section.reverse .about-text {
+  direction: ltr;
+}
+.about-image img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.about-text h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+.about-text p {
+  line-height: 1.7;
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+
+/* Тъмна лента */
+.about-highlights {
+  width: 100%;
+  background: #171a1f;
+  color: #fff;
+  padding: 60px 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  text-align: center;
+}
+.about-highlights .highlight h3 {
+  margin: 10px 0;
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.about-highlights .icon {
+  margin-bottom: 12px;
+}
+
+/* Статистика */
+.about-stats {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  text-align: center;
+}
+.about-stats span {
+  display: block;
+  font-size: 32px;
+  font-weight: bold;
+}
+.about-stats p {
+  opacity: 0.7;
+}
+
+/* CTA */
+/* Акценти (тъмна лента) */
+.about-highlights{
+  background:#171a1f;
+  color:#fff;
+  padding:56px 0;
+}
+.about-highlights__grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:28px;
+  text-align:center;
+}
+@media (min-width:900px){
+  .about-highlights__grid{ grid-template-columns:repeat(3,1fr); gap:40px; }
+  .about-highlights__grid > .highlight + .highlight{
+    border-left:1px solid rgba(255,255,255,.14);
+  }
+}
+.highlight .icon{
+  width:84px; height:84px; margin:0 auto 14px;
+  border-radius:999px; border:2px solid rgba(255,255,255,.85);
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.05); color:#fff;
+}
+.highlight h3{
+  text-transform:uppercase; letter-spacing:.18em; font-size:.95rem;
+  margin:6px 0 8px;
+}
+.highlight p{ opacity:.86; }
+
+/* CTA банер */
+.about-cta{
+  background:#0f1320;
+  color:#fff;
+  padding:44px 0;
+  margin-top:40px;          /* отстояние над CTA, по желание */
+}
+.about-cta__inner{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  align-items:center;
+  justify-content:space-between;
+  text-align:center;
+}
+@media (min-width:900px){
+  .about-cta__inner{ flex-direction:row; text-align:left; }
+}
+.btn{
+  display:inline-block; border-radius:999px; padding:12px 22px;
+  font-weight:600; text-decoration:none; transition:.2s ease;
+}
+.btn.primary{ background:#fff; color:#0f1320; }
+.btn.primary:hover{ transform:translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,.12); }
+.btn.secondary{ border:1px solid #fff; color:#fff; }
+.btn.secondary:hover{ background:#ffffff12; }
+
+/* Full-bleed фон за секции вътре в централен layout */
+.full-bleed{
+  position:relative;
+  left:50%;
+  right:50%;
+  margin-left:-50vw;
+  margin-right:-50vw;
+  width:100vw;
+}
+.container-narrow{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+
