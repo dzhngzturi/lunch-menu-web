@@ -210,3 +210,36 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
     justify-content:center;
   }
 }
+
+/* admin.css */
+.admin-logout { width: 100%; margin-top: .5rem; }
+.admin-logout--all {
+  background: transparent;
+  border: 1px solid #c33;
+  color: #c33;
+}
+.admin-logout--all:hover { background: #fee; }
+
+
+/* ===== Modal (центриран) ===== */
+.modal-backdrop{
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  display: grid; place-items: center; z-index: 9999;
+}
+.modal-card{
+  width: min(92vw, 440px);
+  background: #fff; border-radius: 12px; padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.modal-title{ font-size: 1.1rem; font-weight: 700; margin: 0 0 6px; }
+.modal-msg{ margin: 0 0 14px; color: #333; line-height: 1.45; }
+.modal-actions{ display: flex; justify-content: flex-end; gap: .5rem; }
+
+/* Мини бутони (ако нямаш глобални) */
+.btn{ padding: .5rem .8rem; border-radius: .5rem; cursor: pointer; border: 1px solid transparent; }
+.btn-primary{ background: #2563eb; color:#fff; border-color:#2563eb; }
+.btn-primary:hover{ filter: brightness(1.05); }
+.btn-danger{ background: #c33; color:#fff; border-color:#c33; }
+.btn-danger:hover{ filter: brightness(1.05); }
+.btn-ghost{ background: transparent; border-color:#bbb; color:#333; }
+.btn-ghost:hover{ background:#f5f5f5; }

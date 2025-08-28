@@ -1,17 +1,18 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api',
   headers: { Accept: 'application/json' }
 });
 
+// ── Bearer за всяка заявка
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Auto logout при 401/419
+// ── Авто-logout при 401/419
 api.interceptors.response.use(
   (res) => res,
   (err) => {
@@ -28,22 +29,61 @@ api.interceptors.response.use(
   }
 );
 
-// Auth
-export const login = (email, password) => api.post('/login', { email, password });
-export const logout = () => api.post('/logout');
+/* ===================== AUTH ===================== */
 
-// Категории
+// Login → очакваме 201 + { access_token, token_type:'Bearer', user }
+export async function login(email, password) {
+  const { data, status } = await api.post('/login', { email, password });
+  if (status !== 201) throw new Error('Unexpected login status');
+  localStorage.setItem('token', data.access_token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  window.dispatchEvent(new Event('auth-changed'));
+  return data.user;
+}
+
+export async function me() {
+  const { data } = await api.get('/me');
+  return data.data; // { id, name, email, is_admin }
+}
+
+export async function logout() {
+  try { await api.post('/logout'); } catch {}
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.dispatchEvent(new Event('auth-changed'));
+}
+
+export async function logoutAll() {
+  try { await api.post('/logout-all'); } catch {}
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.dispatchEvent(new Event('auth-changed'));
+}
+
+/* ================== PUBLIC ================== */
+
 export const getCategories = () => api.get('/categories');
+export const getDishes = (params = {}) => api.get('/dishes', { params });
+export const getMenu = () => api.get('/menu');
+
+/* ================== ADMIN ================== */
+
 export const createCategory = (payload) => api.post('/categories', payload);
-export const updateCategory = (id, payload) => api.put(`/categories/${id}`, payload);
+// (PATCH е по-типично за частичен update; PUT също ще работи)
+export const updateCategory = (id, payload) => api.patch(`/categories/${id}`, payload);
 export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 
-// Ястия
-export const getDishes = (params = {}) => api.get('/dishes', { params });
-export const createDish = (formData) => api.post('/dishes', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' },
-});
-export const updateDish = (id, formData) => api.post(`/dishes/${id}?_method=PUT`, formData, {
-  headers: { 'Content-Type': 'multipart/form-data' },
-});
+export const createDish = (formData) =>
+  api.post('/dishes', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+export const updateDish = (id, formData) =>
+  api.post(`/dishes/${id}?_method=PUT`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+
 export const deleteDish = (id) => api.delete(`/dishes/${id}`);
+
+/* =============== ORDERS (ако вече ги имаш в бекенда) =============== */
+// Публично създаване на поръчка
+export const createOrder = (payload) => api.post('/orders', payload);
+// Админски списък/промяна:
+// export const listOrders = (params={}) => api.get('/orders', { params });
+// export const updateOrderStatus = (id, status) => api.patch(`/orders/${id}`, { status });

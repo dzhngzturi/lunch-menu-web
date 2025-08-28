@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import { login } from "../api";
+import { useLocation, useNavigate } from "react-router-dom";
+import { login } from "../api"; // пътят ти
 
 export default function Login() {
   const nav = useNavigate();
   const { state } = useLocation();
 
   const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("password");
+  const [password, setPassword] = useState(""); // нека е празно (или "secret123" за локално)
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -17,16 +17,17 @@ export default function Login() {
     setErr("");
     setLoading(true);
     try {
-      const { data } = await login(email, password); // { token, user }
-      localStorage.setItem("token", data.token);
-      nav(state?.from?.pathname || "/admin", { replace: true });
-    } catch {
-      setErr("Невалидни данни за вход.");
+      const user = await login(email, password); // <-- вече връща user
+      // ако си искал да пазиш редирект към предишна страница
+      const to = state?.from?.pathname || (user?.is_admin ? "/admin" : "/");
+      nav(to, { replace: true });
+    } catch (error) {
+      const msg = error?.response?.data?.message || "Невалидни данни за вход.";
+      setErr(msg);
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="auth-wrap">
@@ -34,11 +35,7 @@ export default function Login() {
         <h1 className="auth-title">Админ вход</h1>
         <p className="auth-sub">Влезте, за да управлявате менюто.</p>
 
-        {err && (
-          <div className="alert error" role="alert">
-            {err}
-          </div>
-        )}
+        {err && <div className="alert error">{err}</div>}
 
         <form onSubmit={onSubmit} className="auth-form" noValidate>
           <label className="field">
@@ -49,9 +46,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@domain.com"
                 autoComplete="username"
-                autoFocus
                 required
               />
             </div>
@@ -81,12 +76,8 @@ export default function Login() {
             </div>
           </label>
 
-          <div className="login-row">
-            <span className="spacer" />
-          </div>
-
           <button className="btn btn-primary btn-lg" disabled={loading}>
-            {loading ? <span className="spinner" aria-label="Зареждане" /> : "Влез"}
+            {loading ? <span className="spinner" /> : "Влез"}
           </button>
         </form>
       </div>
