@@ -81,9 +81,47 @@ export const updateDish = (id, formData) =>
 
 export const deleteDish = (id) => api.delete(`/dishes/${id}`);
 
-/* =============== ORDERS (ако вече ги имаш в бекенда) =============== */
-// Публично създаване на поръчка
-export const createOrder = (payload) => api.post('/orders', payload);
-// Админски списък/промяна:
-// export const listOrders = (params={}) => api.get('/orders', { params });
-// export const updateOrderStatus = (id, status) => api.patch(`/orders/${id}`, { status });
+/* ================== ORDERS ================== */
+
+// Списък с филтри и пагинация
+// params: { station?, status?, page?, per_page?, updated_after? }
+export const listOrders = (params = {}) => {
+  const { signal, ...query } = params;        // всичко без signal → към params
+  return api.get('/orders', { params: query, signal });
+};
+
+// Смяна на статус на ПОРЪЧКА
+export const updateOrderStatus = (orderId, status) =>
+  api.patch(`/orders/${orderId}/status`, { status });
+
+// Смяна на статус на РЕД (item)
+export const updateOrderItemStatus = (itemId, status) =>
+  api.patch(`/orders/items/${itemId}/status`, { status });
+
+// Изтегля всички страници според подадените филтри
+export async function listOrdersAll(params = {}) {
+  const per_page = 100; // голяма страница за по-малко заявки
+  let page = 1;
+  let all = [];
+  for (;;) {
+    const { data } = await listOrders({ ...params, page, per_page });
+    const chunk = data?.data || [];
+    all = all.concat(chunk);
+    const meta = data?.meta;
+    if (!meta || page >= meta.last_page) break;
+    page++;
+  }
+  return all;
+}
+
+// ➕ Добавяне на ред към поръчка
+export const createOrderItem = (orderId, payload) =>
+  api.post(`/orders/${orderId}/items`, payload); // { dish_id, qty, note? }
+
+// ✏️ Редакция на ред
+export const updateOrderItem = (orderId, itemId, payload) =>
+  api.patch(`/orders/${orderId}/items/${itemId}`, payload); // { qty?, note? }
+
+// 🗑 Премахване на ред
+export const deleteOrderItem = (orderId, itemId) =>
+  api.delete(`/orders/${orderId}/items/${itemId}`);

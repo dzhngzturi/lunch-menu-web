@@ -1,42 +1,3 @@
-/* ========== ADMIN LAYOUT (без хоризонтален overflow) ========== */
-/* ===== Layout ===== */
-.admin-shell{
-  display: grid;
-  grid-template-columns: 240px 1fr;  /* sidebar + main */
-  min-height: 100vh;                 /* без вътрешни скролове */
-}
-
-.admin-sidebar{
-  background:#f9fafb;
-  border-right:1px solid #e5e7eb;
-  padding:24px 20px;
-  display:flex; flex-direction:column;
-}
-
-.admin-title{
-  margin:0 0 20px;                  /* разстояние под заглавието */
-  font-size:20px; font-weight:700;
-}
-
-.admin-nav{
-  display:flex; flex-direction:column; gap:10px; /* линковете не се „лепят“ */
-  margin-bottom: 16px;
-}
-.admin-nav a{
-  text-decoration:none; color:#111;
-  padding:8px 12px; border-radius:6px;
-}
-.admin-nav a.active{ background:#e9edf5; }
-.admin-nav a:hover{ background:#f1f5f9; }
-
-.admin-main{
-  padding:24px; 
-  min-width: 0;                     /* предотвратява хоризонтален скрол */
-}
-.admin-content{
-  overflow: visible;                 /* да няма вътрешни скролове */
-}
-
 /* ===== Logout (outline -> red on hover) ===== */
 .admin-logout {
   display: block;
@@ -55,25 +16,6 @@
 .admin-logout:hover {
   border-color: #dc3545;
   color: #dc3545;
-}
-
-/* ===== Responsive: на мобилно sidebar отгоре ===== */
-@media (max-width: 900px){
-  .admin-shell{
-    grid-template-columns: 1fr;      /* една колона */
-  }
-  .admin-sidebar{
-    border-right:0; border-bottom:1px solid #e5e7eb;
-  }
-}
-
-
-
-
-/* responsive */
-@media (max-width:900px){
-  .admin-shell{ grid-template-columns:1fr; }
-  .admin-sidebar{ border-right:0; border-bottom:1px solid #e5e7eb; }
 }
 
 /* ========== ТАБЛИЦИ (общи) ========== */
@@ -98,13 +40,6 @@ button.add:hover{background:#15803d}
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb}
 
-/* ========== ДОКИНГ/МОБИЛНО ОБЩО ========== */
-@media (max-width:900px){
-  .admin-shell{grid-template-columns:1fr}
-  .admin-sidebar{border-right:0;border-bottom:1px solid #e5e7eb;padding:16px}
-  .admin-main{padding:16px}
-}
-
 /* Тулбар – центрирано и 100% ширини на мобилно */
 .toolbar .form-row{align-items:center;justify-content:center}
 @media (max-width:768px){
@@ -124,91 +59,6 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
   .toolbar .form-row button{width:100%;text-align:center}
   .toolbar .form-row input[type="file"]{display:block;width:100%}
   .toolbar .form-row input,.toolbar .form-row select{min-width:0}
-}
-
-/* ========== ЯСТИЯ (таблица) ========== */
-.table.dishes{width:100%;border-collapse:collapse;min-width:680px}
-.table.dishes th,.table.dishes td{padding:10px 12px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:middle}
-
-/* Действия – център и на десктоп */
-.table.dishes td.actions{display:flex;gap:8px;justify-content:center}
-
-.table.dishes img.thumb{
-  width:72px;height:52px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb
-}
-
-/* --- MOBILE STACKED MODE --- */
-@media (max-width:768px){
-  .table.dishes{min-width:0;display:block}         /* override на min-width и фиксира ширината */
-  .table.dishes thead{display:none}
-
-  .table.dishes tbody,.table.dishes tr,.table.dishes td{
-    display:block;width:100%
-  }
-  .table.dishes tr{
-    background:#fff;border:1px solid #e5e7eb;border-radius:10px;
-    padding:12px;margin-bottom:12px
-  }
-  .table.dishes td{border:0;padding:6px 0}
-  .table.dishes td::before{
-    content:attr(data-label);font-weight:600;display:inline-block;min-width:120px;margin-right:8px;color:#475569
-  }
-  .table.dishes td.actions{padding-top:10px;display:flex;gap:8px;justify-content:center}
-  .table.dishes img.thumb{width:100%;height:160px;margin-top:6px}
-}
-
-/* ========== КАТЕГОРИИ (таблица) ========== */
-/* Desktop */
-.table.categories{
-  width:100%;
-  border-collapse:collapse;
-  min-width:560px;               /* по-широка от общото правило */
-}
-.table.categories th,
-.table.categories td{
-  padding:10px 12px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-  vertical-align:middle;
-}
-/* бутони в колоната Действия – център */
-.table.categories td.actions{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-}
-
-/* Mobile (stacked cards) */
-@media (max-width:768px){
-  .table.categories{ min-width:0; display:block; }
-  .table.categories thead{ display:none; }
-
-  .table.categories tbody,
-  .table.categories tr,
-  .table.categories td{ display:block; width:100%; }
-
-  .table.categories tr{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:10px;
-    padding:12px;
-    margin-bottom:12px;
-  }
-  .table.categories td{ border:0; padding:6px 0; }
-
-  .table.categories td::before{
-    content:attr(data-label);
-    font-weight:600;
-    display:inline-block;
-    min-width:120px;
-    margin-right:8px;
-    color:#475569;
-  }
-
-  .table.categories td.actions{
-    padding-top:10px;
-    justify-content:center;
-  }
 }
 
 /* admin.css */
@@ -243,3 +93,762 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 .btn-danger:hover{ filter: brightness(1.05); }
 .btn-ghost{ background: transparent; border-color:#bbb; color:#333; }
 .btn-ghost:hover{ background:#f5f5f5; }
+
+/* ====== DishForm Card ====== */
+.dish-form {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.dish-form h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+/* Полета */
+.dish-form .field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.dish-form .field label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+.dish-form .field input,
+.dish-form .field textarea,
+.dish-form .field select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.dish-form .field input:focus,
+.dish-form .field textarea:focus,
+.dish-form .field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Upload */
+.dish-form .field input[type="file"] {
+  padding: 6px;
+  border: none;
+}
+
+/* Преглед на снимка */
+.dish-form .preview {
+  margin-top: 8px;
+  max-height: 120px;
+}
+.dish-form .preview img {
+  max-height: 120px;
+  border-radius: 6px;
+}
+
+/* Бутоните под формата */
+.dish-form .actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.dish-form .actions .btn-save {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dish-form .actions .btn-save:hover {
+  background: #1d4ed8;
+}
+
+.dish-form .actions .btn-cancel {
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dish-form .actions .btn-cancel:hover {
+  background: #d1d5db;
+}
+
+/* контейнерът на формата */
+.dish-form {
+  max-width: 880px;   /* по-тясна картичка */
+  margin: 0 auto;     /* център */
+}
+
+/* малко въздух под заглавието */
+.dish-form h3 {
+  margin-bottom: 14px;
+}
+
+/* по-ясно състояние при disable */
+.dish-form .btn-save[disabled],
+.dish-form .btn-cancel[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+
+/* табове */
+.tabs { display:flex; gap:.5rem; margin:.5rem 0 1rem; }
+.tab { padding:.5rem .8rem; border:1px solid #ddd; border-radius:8px; text-decoration:none; color:#333; }
+.tab.is-active { background:#f5f7fb; border-color:#cdd3e0; }
+
+/* pills */
+.pill { padding:.15rem .5rem; border-radius:999px; font-size:.85rem; text-transform:uppercase; }
+.pill-new { background:#e8f0ff; color:#2a62ff; }
+.pill-in_progress { background:#fff4da; color:#a86600; }
+.pill-ready { background:#eaffea; color:#2f8f2f; }
+.pill-done { background:#e6e6e6; color:#545454; }
+.pill-cancel { background:#ffe9ea; color:#ba2b2b; }
+
+/* карта/списък */
+.card { background:#fff; border:1px solid #eceff5; border-radius:12px; padding:14px; }
+/* Toolbar (филтри + бутони) */
+.toolbar{
+  display:flex;
+  gap:.75rem;
+  align-items:flex-end;
+  flex-wrap:wrap; /* <-- позволява пренасяне */
+}
+.toolbar .filters{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  min-width: 0;            /* позволява свиване */
+  flex: 1 1 260px;         /* на мобилен ще заема цял ред */
+}
+.toolbar .spacer { flex:1 auto;}
+
+/* react-select контейнерът да не избутва */
+.css-13cymwt-control, .css-1fdsijx-ValueContainer{
+  min-width:0;
+}
+.orders-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px; }
+
+.orders-list .order {
+  border-bottom: 3px dashed #9ca3af;   /* пунктирена линия */
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.orders-list .order:last-child {
+  border-bottom: none;
+}
+
+/* Ефект с градиент */
+.orders-list .order::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to right, #3b82f6, #22c55e, #f59e0b, #ef4444);
+  opacity: 0.4;
+}
+
+
+/* Хедър на поръчка: заглавие + бутони */
+.order-head{
+  display:flex;
+  gap:.75rem;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;           /* <-- пренася иконките */
+}
+
+.order-title{
+  display:flex;
+  gap:.5rem;
+  align-items:center;
+  min-width:0;
+  flex:1 1 auto;
+}
+
+.order-title i {
+  color: #64748b; /* приглушено сиво */
+  margin-right: .4rem;
+}
+
+.order-id {
+  font-weight: 700;
+  white-space: nowrap;
+  color: #111827;
+}
+
+.order-sub {
+  color: #475569;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.order-meta {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.order-status {
+  padding: .25rem .5rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: .85rem;
+}
+
+
+
+.items { width:100%; border-collapse:collapse; }
+.items th, .items td { border-top:1px solid #f0f2f8; padding:8px; }
+.a-right { text-align:right; }
+.muted { color:#7b8190; }
+.pager { display:flex; align-items:center; gap:12px; justify-content:center; margin-top:10px; }
+
+/* ===== Pills (mobile-first) ===== */
+.pill {
+  --pill-bg: #eef1f4;
+  --pill-fg: #374151;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  height: 22px;
+  padding: 0 .5rem;
+  border-radius: 999px;
+  font-size: .75rem;        /* 12px */
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--pill-fg);
+  background: var(--pill-bg);
+  white-space: nowrap;
+}
+
+/* компактни на съвсем малки екрани */
+@media (max-width: 420px) {
+  .pill { height: 20px; padding: 0 .4rem; font-size: .7rem; }
+}
+
+/* цветове */
+.pill-new         { --pill-bg:#e9f2ff; --pill-fg:#1864ab; }
+.pill-in_progress { --pill-bg:#fff3e0; --pill-fg:#b25e00; }
+.pill-ready       { --pill-bg:#e6fbef; --pill-fg:#18794e; }
+.pill-done        { --pill-bg:#eceef1; --pill-fg:#5b6470; }
+.pill-cancel      { --pill-bg:#ffe8e6; --pill-fg:#b42318; }
+
+/* иконки – показваме само на мобилно, за да пестим място */
+.pill::before {
+  content: attr(data-ico);
+  font-size: .9em;
+}
+@media (min-width: 640px) {
+  .pill::before { margin-right: .15rem; } /* малко въздух на по-широко */
+   .items thead { display: none; }
+  .items, .items tbody, .items tr, .items td { display: block; width: 100%; }
+  .items tr {
+    background: #fff;
+    border: 1px solid #eceff3;
+    border-radius: 12px;
+    margin-bottom: .6rem;
+  }
+  .items td {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .25rem 0;
+    font-size: .95rem;
+  }
+  .items td::before {
+    content: attr(data-th);
+    color: #6b7280;            /* заглавие */
+    font-weight: 600;
+  }
+  .items td:last-child { padding-top: .5rem; }
+  .items .a-right { justify-content: flex-end; }
+}
+
+.toolbar {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  margin-bottom: .75rem;
+}
+.toolbar .filters select { height: 36px; }
+.toolbar .spacer { flex: 1; }
+
+/* остава видим отгоре при скрол на мобилно */
+@media (max-width: 640px) {
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #fff;
+    padding: .5rem .25rem;
+    border-bottom: 1px solid #eef1f4;
+  }
+}
+
+/* ===== Badges (FA) ===== */
+.badge {
+  --bg: #eef2f7;
+  --fg: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1;
+  letter-spacing: .01em;
+  border: 1px solid rgba(0,0,0,.05);
+}
+.badge i { font-size: .9em; }
+
+/* show only icon on very small screens */
+@media (max-width: 480px) {
+  .badge .label { display:none; }
+}
+
+/* color schemes */
+.badge.is-new         { --bg:#e9f2ff; --fg:#0b56a4; }
+.badge.is-in_progress { --bg:#fff1e6; --fg:#9a4d00; }
+.badge.is-ready       { --bg:#e7faef; --fg:#176c49; }
+.badge.is-done        { --bg:#eff1f4; --fg:#5b6470; }
+.badge.is-cancel      { --bg:#ffeaea; --fg:#ba1b1b; }
+
+/* ===== Icon action button (next status) ===== */
+.btn-icon {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.06);
+  background: #fff;
+  transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+.btn-icon:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.08); }
+.btn-icon i { font-size: .95rem; }
+
+/* contextual tints by current status (the button advances to NEXT) */
+.btn-icon.nt-new         { color:#0b56a4; background:#e9f2ff; }
+.btn-icon.nt-in_progress { color:#9a4d00; background:#fff1e6; }
+.btn-icon.nt-ready       { color:#176c49; background:#e7faef; }
+.btn-icon.nt-done        { color:#5b6470; background:#eff1f4; }
+.btn-icon.nt-cancel      { color:#ba1b1b; background:#ffeaea; }
+
+/* toolbar improvements */
+.toolbar {
+  display:flex; gap:.75rem; align-items:center; margin-bottom:.85rem;
+}
+.toolbar .spacer { flex:1; }
+@media (max-width:640px){
+  .toolbar { position: sticky; top: 0; z-index: 5; background:#fff;
+             padding:.5rem .25rem; border-bottom:1px solid #eef1f4; }
+}
+
+/* cards view for items on mobile (ако вече добави горните, запази ги) */
+@media (max-width: 640px) {
+  .items thead { display:none; }
+  .items, .items tbody, .items tr, .items td { display:block; width:100%; }
+  .items tr {
+    background:#fff; border:1px solid #eceff3; border-radius:12px;
+    margin-bottom:.65rem;
+  }
+  .items td { display:flex; justify-content:space-between; gap:.75rem; padding:.25rem 0; }
+  .items td::before { content: attr(data-th); color:#6b7280; font-weight:600; }
+  .items .a-right { justify-content:flex-end; }
+}
+
+/* ===== Цветни бутони за смяна на статус (като кръгчетата) ===== */
+.order-status-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.order-status-label {
+  font-weight: 600;
+  color: #5b6470;
+  white-space: nowrap;
+}
+
+.order-status-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-option{
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.4rem .7rem; border:1px solid var(--line,#e5e7eb);
+  border-radius:9999px; background:#fff; color:#374151;
+  font-weight:600; cursor:pointer; transition:.12s ease;
+}
+
+.status-option i { font-size: 12px; }
+.status-option .label { margin-top: 1px; }
+.status-option:hover{ transform:translateY(-1px); }
+.status-option:focus-visible{ outline:3px solid rgba(59,130,246,.35); outline-offset:2px; }
+/* тикчето е скрито по подразбиране */
+.status-option .tick{ display:none; }
+.status-option:active { transform: translateY(0); }
+/* активен бутон – вдигнат, по-тъмен текст, тикче */
+.status-option.active{
+  transform:translateY(-1px);
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  border-width:2px;
+}
+.status-option.active .tick{ display:inline-block; }
+/* Цветове 1:1 с бейджовете */
+.status-option.new {
+  background: #e9f2ff;  /* синьо-светло */
+  color: #0b56a4;
+}
+.status-option.new.active   { background:#eff6ff; border-color:#3b82f6; color:#1e3a8a; }
+.status-option.in_progress {
+  background: #fff1e6;  /* оранжево-светло */
+  color: #9a4d00;
+}
+/* по статус — цветове */
+.status-option.in_progress.active{ background:#fff7ed; border-color:#f59e0b; color:#9a3412; }
+.status-option.ready {
+  background: #e7faef;  /* зелено-светло */
+  color: #176c49;
+}
+.status-option.ready.active      { background:#ecfdf5; border-color:#10b981; color:#065f46; }
+.status-option.done {
+  background: #eff1f4;  /* сиво-светло */
+  color: #5b6470;
+}
+.status-option.done.active  { background:#eef2ff; border-color:#6366f1; color:#312e81; }
+.status-option.cancel {
+  background: #ffeaea;  /* червено-светло */
+  color: #ba1b1b;
+}
+.status-option.cancel.active{ background:#fef2f2; border-color:#ef4444; color:#7f1d1d; }
+.order-status-row td {
+  padding-top: 12px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.order-status-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+/* ===== Акцент на карта според СТАТУС НА ПОРЪЧКА ===== */
+.order { border-left: 4px solid transparent; padding-left: 8px; transition: border-color .2s ease; }
+.order.is-new    { border-left-color: #3b82f6; } /* синьо */
+.order.is-done   { border-left-color: #10b981; } /* зелено */
+.order.is-cancel { border-left-color: #ef4444; } /* червено */
+
+/* По-лек фон на хедъра, за да изпъкне още малко */
+.order.is-new    .order-head { background: rgba(59,130,246,.06); }
+.order.is-done   .order-head { background: rgba(16,185,129,.06); }
+.order.is-cancel .order-head { background: rgba(239,68,68,.06); }
+
+.order.is-done,
+.order.is-cancel {
+  opacity: 0.6;
+  pointer-events: none; /* изключва кликове по всички бутони вътре */
+}
+
+
+/* ===== Акцент на ред според СТАТУС НА ЯСТИЕ ===== */
+.items tr.item td { transition: background-color .2s ease; }
+.items tr.item.is-in_progress td { background: #fffbeb; } /* светло жълто */
+.items tr.item.is-ready       td { background: #ecfdf5; } /* светло зелено */
+
+
+/* --- Admin Layout --- */
+.admin-shell {
+  --aside-w: 240px;
+  --topbar-h: 56px;
+  display: grid;
+  grid-template-columns: var(--aside-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar main";
+  min-height: 100dvh;
+  background: #f6f7fb;
+}
+
+/* topbar */
+.admin-topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-brand {
+  font-weight: 700;
+  font-size: 1.4rem;   /* по-голям шрифт */
+  color: #111827;      /* по-тъмен за четимост */
+}
+
+/* sidebar */
+.admin-sidebar {
+  grid-area: sidebar;
+  background: #0f172a;   /* slate-900 */
+  color: #cbd5e1;        /* slate-300 */
+  padding: 16px;
+}
+.admin-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-menu a {
+  color: inherit;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.admin-menu a:hover { background: rgba(255,255,255,.06); }
+.admin-menu a.active {
+  background: #2563eb;  /* blue-600 */
+  color: #fff;
+}
+.admin-menu-sep {
+  margin: 12px 0;
+  height: 1px;
+  background: rgba(255,255,255,.1);
+}
+.admin-backlink {
+  margin-top: 8px;
+  opacity: .8;
+}
+
+/* main */
+.admin-main { grid-area: main; }
+.admin-container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* Responsive: sidebar collapses */
+@media (max-width: 1024px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "topbar"
+      "main";
+  }
+  .admin-burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+ .admin-sidebar {
+    position: fixed;
+    inset: var(--topbar-h) auto 0 0;
+    width: min(80vw, 280px);
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 30;
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-main {
+    position: relative;
+    z-index: 20;
+  }
+}
+
+/* Create Order */
+.create-order .card-header { padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.create-order h1 { font-size: 20px; margin: 0; }
+
+.co-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 16px; }
+.co-col { display: flex; flex-direction: column; gap: 6px; }
+.co-col.grow { grid-column: span 2; }
+
+.co-label { font-weight: 600; font-size: 14px; }
+.co-input, .co-textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #fff;
+}
+.co-textarea { resize: vertical; }
+
+.seg { display: inline-flex; background: #eef2ff; border-radius: 10px; padding: 4px; gap: 6px; }
+.seg-btn {
+  border: 0; border-radius: 8px; padding: 8px 12px; background: transparent; cursor: pointer;
+  font-weight: 600; color: #374151;
+}
+.seg-btn.active { background: #2563eb; color: #fff; }
+
+.co-basket { margin-top: 12px; }
+.co-table { width: 100%; border-collapse: collapse; }
+.co-table th, .co-table td { padding: 10px 12px; border-bottom: 1px solid #eee; }
+.co-table th { text-align: left; font-weight: 700; }
+.a-right { text-align: right; }
+.strong { font-weight: 700; }
+.muted { color: #6b7280; }
+
+.co-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+/* Mobile */
+@media (max-width: 800px) {
+  .co-row { grid-template-columns: 1fr; }
+  .co-col.grow { grid-column: auto; }
+  .seg { width: 100%; justify-content: space-between; }
+}
+
+
+/* ===== Reports ===== */
+.report-card .card-header { padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.report-card h1 { font-size: 20px; margin: 0; }
+
+.report-filters { margin-top: 12px; }
+.rf-row { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; }
+.rf-col { display: flex; flex-direction: column; gap: 6px; }
+.rf-label { font-weight: 600; font-size: 14px; }
+.rf-input { border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 12px; font: inherit; }
+.rf-actions { align-self: end; flex-direction: row; gap: 8px; }
+
+.report-stats { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; margin: 16px 0 4px; }
+.stat-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+.stat-label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 800; }
+.stat-note { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { background: #eef2ff; color: #1f2937; padding: 4px 8px; border-radius: 999px; font-size: 12px; }
+
+.report-table-wrap { margin-top: 10px; overflow: auto; }
+.report-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.report-table th, .report-table td { border-bottom: 1px solid #eee; padding: 10px 12px; text-align: left; }
+.report-table th { font-weight: 700; }
+.a-right { text-align: right; }
+
+/* mobile */
+@media (max-width: 1024px) {
+  .rf-row { grid-template-columns: 1fr 1fr; }
+  .report-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .rf-row { grid-template-columns: 1fr; }
+  .report-stats { grid-template-columns: 1fr; }
+  .rf-actions { justify-content: flex-start; }
+}
+
+/* ===== polish: filters layout & buttons inside card ===== */
+.report-card .card-header { padding-bottom: 8px; border-bottom: 1px solid #eee; }
+
+.report-filters { margin-top: 12px; }
+.rf-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap: 12px;
+}
+.rf-col { display: flex; flex-direction: column; gap: 6px; }
+.rf-label { font-weight: 600; font-size: 14px; }
+.rf-input {
+  border: 1px solid #d1d5db; border-radius: 10px;
+  padding: 10px 12px; font: inherit;
+}
+
+/* бутоните да стоят вътре, вдясно и да могат да пречупват на нов ред */
+.rf-actions {
+  display: flex; gap: 8px;
+  align-items: end; justify-content: flex-end;
+  flex-wrap: wrap;
+  grid-column: 5 / 7; /* заемаме двете последни колони на широк екран */
+}
+
+/* статистиката да не излиза – чиповете се пречупват */
+.stat-note { display: flex; flex-wrap: wrap; gap: 6px; max-width: 100%; }
+
+@media (max-width: 1024px) {
+  .rf-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .rf-actions { grid-column: auto; justify-content: flex-start; }
+}
+@media (max-width: 640px) {
+  .rf-row { grid-template-columns: 1fr; }
+  .rf-actions { justify-content: flex-start; }
+}
+
+
+
+/* === Backdrop for mobile sidebar (shows only when menu is open) === */
+@media (max-width: 1024px) {
+  .admin-backdrop {
+    display: none;
+    position: fixed;
+    inset: var(--topbar-h) 0 0 0;
+    background: rgba(0,0,0,.35);
+    z-index: 25;
+  }
+  .admin-backdrop.show { display: block; }
+}
+
+/* Ensure the topbar stays visible (defensive) */
+.admin-topbar { position: sticky; top: 0; z-index: 40; }
+
+/* Иконата в бутона */
+.admin-burger-icon {
+  font-size: 20px;
+  line-height: 1;
+  color: #111827;
+  pointer-events: none;
+}
+
+/* показва се само на мобилно */
+@media (min-width: 1025px) {
+  .admin-burger {
+    display: none;
+  }
+  .admin-burger-icon { display: none; }
+}
+
+@media (max-width:1024px){
+  .admin-overlay{
+    display:none;
+    position:fixed;
+    inset: var(--topbar-h) 0 0 0; /* отдолу под sticky топбара */
+    background:rgba(0,0,0,.35);
+    z-index:25;
+  }
+  .admin-overlay.show{ display:block; }
+}

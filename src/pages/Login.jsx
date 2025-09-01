@@ -1,13 +1,14 @@
+// src/pages/Login.jsx
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { login } from "../api"; // пътят ти
+import { login } from "../api";
 
 export default function Login() {
   const nav = useNavigate();
   const { state } = useLocation();
 
   const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState(""); // нека е празно (или "secret123" за локално)
+  const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -17,10 +18,17 @@ export default function Login() {
     setErr("");
     setLoading(true);
     try {
-      const user = await login(email, password); // <-- вече връща user
-      // ако си искал да пазиш редирект към предишна страница
-      const to = state?.from?.pathname || (user?.is_admin ? "/admin" : "/");
-      nav(to, { replace: true });
+      const user = await login(email, password); // { id, name, email, role }
+
+      if (state?.from?.pathname) {
+        nav(state.from.pathname, { replace: true });
+      } else if (user?.role === "admin") {
+        nav("/admin", { replace: true });
+      } else if (user?.role === "staff") {
+        nav("/orders", { replace: true });
+      } else {
+        nav("/", { replace: true });
+      }
     } catch (error) {
       const msg = error?.response?.data?.message || "Невалидни данни за вход.";
       setErr(msg);
@@ -32,8 +40,8 @@ export default function Login() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <h1 className="auth-title">Админ вход</h1>
-        <p className="auth-sub">Влезте, за да управлявате менюто.</p>
+        <h1 className="auth-title">Вход</h1>
+        <p className="auth-sub">Влезте с вашия акаунт.</p>
 
         {err && <div className="alert error">{err}</div>}
 
@@ -68,8 +76,6 @@ export default function Login() {
                 type="button"
                 className="eye"
                 onClick={() => setShowPwd((v) => !v)}
-                aria-label={showPwd ? "Скрий парола" : "Покажи парола"}
-                title={showPwd ? "Скрий парола" : "Покажи парола"}
               >
                 {showPwd ? "🙈" : "👁️"}
               </button>
