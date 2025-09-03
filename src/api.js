@@ -1,10 +1,16 @@
 import axios from 'axios';
 
+const FALLBACK = 'http://127.0.0.1:8000/api';
+const ENV_BASE = import.meta.env.VITE_API_BASE_URL;
+const baseURL = ENV_BASE && ENV_BASE.trim() ? ENV_BASE.trim() : FALLBACK;
+
+console.log('[API] VITE_API_BASE_URL =', ENV_BASE);
+console.log('[API] using baseURL     =', baseURL);
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api',
+  baseURL,
   headers: { Accept: 'application/json' }
 });
-
 // ── Bearer за всяка заявка
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');

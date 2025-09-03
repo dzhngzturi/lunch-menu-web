@@ -7,7 +7,6 @@ import {
   updateOrderStatus,
   createOrderItem,
 } from "../api";
-import usePolling from "../hooks/usePolling";
 import AddOrderItemModal from "../components/AddOrderItemModal";
 import Modal from "../components/Modal";
 import {
@@ -16,6 +15,7 @@ import {
   savePrintedSet,
   resetPrintedForOrder,
 } from "../utils/print-utils";
+import { echo } from "../lib/echo";
 
 const PER_PAGE = 20;
 
@@ -98,18 +98,55 @@ export default function OrdersBoard({ station }) {
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // модали
   const [addItemForOrder, setAddItemForOrder] = useState(null);
-  const [msg, setMsg] = useState(null); // { title, message }
+  const [msg, setMsg] = useState(null);
 
-  // филтри
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedTable, setSelectedTable] = useState("");
 
-  const lastSyncRef = useRef(null);
-  const abortRef = useRef(null);
+  const hydratedRef   = useRef(false);
+  const fullCtrlRef   = useRef(null);
+  const deltaCtrlRef  = useRef(null);
+  const deltaTimerRef = useRef(null);
+  const lastSyncRef   = useRef(null);
 
-  // списък маси (за филтър)
+  // 🔔 звук (файл: /public/bell-notification.mp3)
+  const soundRef = useRef(null);
+  const soundArmedRef = useRef(false);
+
+  useEffect(() => {
+    const audio = new Audio('/bell-notification.mp3');
+    audio.preload = 'auto';
+    audio.volume = 1.0;
+    soundRef.current = audio;
+
+    // auto-unlock при първото взаимодействие/фокус
+    const unlock = async () => {
+      if (!soundRef.current || soundArmedRef.current) return;
+      try {
+        soundRef.current.muted = true;
+        await soundRef.current.play();
+        soundRef.current.pause();
+        soundRef.current.currentTime = 0;
+        soundRef.current.muted = false;
+        soundArmedRef.current = true;
+        removeListeners();
+      } catch {}
+    };
+    const events = ['pointerdown', 'keydown', 'touchstart'];
+    const addListeners = () => events.forEach(ev => window.addEventListener(ev, unlock, { passive: true }));
+    const removeListeners = () => events.forEach(ev => window.removeEventListener(ev, unlock));
+    addListeners();
+    const onVisible = () => { if (document.visibilityState === 'visible') unlock(); };
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      removeListeners();
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, []);
+
+  // списък маси за филтър
   const tables = useMemo(() => {
     const set = new Set();
     orders.forEach((o) => o.table_no && set.add(String(o.table_no)));
@@ -118,9 +155,9 @@ export default function OrdersBoard({ station }) {
 
   const statusOptions = useMemo(
     () => [
-      { value: "", label: "Всички" },
-      { value: "new", label: "Нова" },
-      { value: "done", label: "Приключена" },
+      { value: "",       label: "Всички" },
+      { value: "new",    label: "Нова" },
+      { value: "done",   label: "Приключена" },
       { value: "cancel", label: "Отказана" },
     ],
     []
@@ -143,74 +180,111 @@ export default function OrdersBoard({ station }) {
     menu: (base) => ({ ...base, zIndex: 25 }),
   };
 
-  /* ---------- зареждане ---------- */
-  const fetchOrders = async (opts = {}) => {
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-    if (!opts.onlyDelta) setLoading(true);
+  // --------- зареждане ---------
+  const fetchOrders = async ({ onlyDelta = false } = {}) => {
+    const params = {
+      station,
+      page,
+      per_page: PER_PAGE,
+      ...(statusFilter  ? { status: statusFilter }    : {}),
+      ...(selectedTable ? { table_no: selectedTable } : {}),
+      ...(onlyDelta && lastSyncRef.current ? { updated_after: lastSyncRef.current } : {}),
+    };
+
+    // ---- DELTA ----
+    if (onlyDelta) {
+      if (fullCtrlRef.current) return;
+      if (deltaCtrlRef.current) return;
+
+      const ctrl = new AbortController();
+      deltaCtrlRef.current = ctrl;
+
+      try {
+        const baseParams = {
+          station,
+          page: 1,
+          per_page: PER_PAGE,
+          ...(statusFilter  ? { status: statusFilter }    : {}),
+          ...(selectedTable ? { table_no: selectedTable } : {}),
+        };
+
+        const { data } = await listOrders({ ...baseParams, signal: ctrl.signal });
+        const chunk = Array.isArray(data?.data) ? data.data : [];
+
+        setOrders(prev => {
+          const byId = new Map(prev.map(o => [o.id, o]));
+          let isNew = false;
+          for (const o of chunk) {
+            if (!byId.has(o.id)) isNew = true; // има нова поръчка
+            byId.set(o.id, o);
+          }
+          if (isNew && soundArmedRef.current && soundRef.current) {
+            try { soundRef.current.currentTime = 0; soundRef.current.play(); } catch {}
+          }
+          const sorted = Array.from(byId.values()).sort((a, b) => b.id - a.id);
+          return sorted.slice(0, PER_PAGE);
+        });
+
+        lastSyncRef.current = new Date().toISOString();
+      } catch (e) {
+        if (e.code !== 'ERR_CANCELED' && e.name !== 'CanceledError') console.error(e);
+      } finally {
+        deltaCtrlRef.current = null;
+      }
+      return;
+    }
+
+    // ---- FULL ----
+    if (fullCtrlRef.current) fullCtrlRef.current.abort();
+    const ctrl = new AbortController();
+    fullCtrlRef.current = ctrl;
+    setLoading(true);
 
     try {
-      const params = {
-        station,
-        page,
-        per_page: PER_PAGE,
-        ...(statusFilter ? { status: statusFilter } : {}),
-        ...(selectedTable ? { table_no: selectedTable } : {}),
-        ...(opts.onlyDelta && lastSyncRef.current ? { updated_after: lastSyncRef.current } : {}),
-      };
-
-      const { data } = await listOrders({ ...params, signal: controller.signal });
-
-      if (data?.data && data?.meta) {
-        if (opts.onlyDelta) {
-          const byId = new Map(orders.map((o) => [o.id, o]));
-          data.data.forEach((o) => byId.set(o.id, o));
-          setOrders(Array.from(byId.values()));
-          setMeta(data.meta);
-        } else {
-          setOrders(data.data);
-          setMeta(data.meta);
-        }
-      } else {
-        if (opts.onlyDelta) {
-          const byId = new Map(orders.map((o) => [o.id, o]));
-          (data?.data || []).forEach((o) => byId.set(o.id, o));
-          setOrders(Array.from(byId.values()));
-        } else {
-          setOrders(data?.data || []);
-          setMeta(null);
-        }
-      }
-
+      const { data } = await listOrders({ ...params, signal: ctrl.signal });
+      const chunk = Array.isArray(data?.data) ? data.data : [];
+      const sorted = chunk.slice().sort((a, b) => b.id - a.id); // новите най-отгоре
+      setOrders(sorted);
+      if (data?.meta) setMeta(data.meta);
+      hydratedRef.current = true;
       lastSyncRef.current = new Date().toISOString();
     } catch (e) {
-      if (e.code !== "ERR_CANCELED" && e.name !== "CanceledError") console.error(e);
+      if (e.code !== 'ERR_CANCELED' && e.name !== 'CanceledError') console.error(e);
     } finally {
-      if (!opts.onlyDelta) setLoading(false);
+      if (fullCtrlRef.current === ctrl) fullCtrlRef.current = null;
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
-    return () => abortRef.current?.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchOrders({ onlyDelta: false });
+    return () => { if (fullCtrlRef.current) fullCtrlRef.current.abort(); };
   }, [station, statusFilter, selectedTable, page]);
 
-  usePolling(() => fetchOrders({ onlyDelta: true }), {
-    delay: 6000,
-    enabled: true,
-    deps: [station, statusFilter, selectedTable, page],
-  });
+  useEffect(() => {
+    const ch = echo.channel('orders');
+    const onUpdated = () => {
+      if (!hydratedRef.current) return;
+      if (deltaTimerRef.current) clearTimeout(deltaTimerRef.current);
+      deltaTimerRef.current = setTimeout(() => {
+        fetchOrders({ onlyDelta: true });
+      }, 600);
+    };
+    ch.listen('.order.updated', onUpdated);
+    return () => {
+      ch.stopListening('.order.updated', onUpdated);
+      if (deltaTimerRef.current) clearTimeout(deltaTimerRef.current);
+    };
+  }, [station]);
 
-  /* ---------- helper-и ---------- */
+  // -------- помощни --------
   const showMsg = (title, message) => setMsg({ title, message });
   const closeMsg = () => setMsg(null);
 
   const getItemsToPrint = (order) => {
     const printed = loadPrintedSet(station);
     return (order.items || []).filter(
-      (i) => i.station === station && i.status === 'new' && !printed.has(i.id)
+      (i) => i.station === station && i.status === "new" && !printed.has(i.id)
     );
   };
 
@@ -225,10 +299,8 @@ export default function OrdersBoard({ station }) {
     showMsg("Печат", `Изпратени към принтер: ${items.length} ред(а).`);
   };
 
-  const allowResetReprint = (order) =>
-    order.status === "new"; // разрешаваме повторен печат за поръчки 'Нова'
+  const allowResetReprint = (order) => order.status === "new";
 
-  /* ---------- действия над елемент/поръчка ---------- */
   const setItemStatus = async (item, value) => {
     const prev = item.status;
     setOrders((cur) =>
@@ -276,10 +348,7 @@ export default function OrdersBoard({ station }) {
             styles={selectStyles}
             options={statusOptions}
             value={statusOptions.find((o) => o.value === statusFilter)}
-            onChange={(opt) => {
-              setPage(1);
-              setStatusFilter(opt?.value || "");
-            }}
+            onChange={(opt) => { setPage(1); setStatusFilter(opt?.value || ""); }}
             isClearable={false}
           />
         </div>
@@ -291,10 +360,7 @@ export default function OrdersBoard({ station }) {
             styles={selectStyles}
             options={tableOptions}
             value={tableOptions.find((o) => o.value === selectedTable)}
-            onChange={(opt) => {
-              setPage(1);
-              setSelectedTable(opt?.value || "");
-            }}
+            onChange={(opt) => { setPage(1); setSelectedTable(opt?.value || ""); }}
             isClearable={false}
           />
         </div>
@@ -319,7 +385,6 @@ export default function OrdersBoard({ station }) {
 
             return (
               <li key={order.id} className={`order is-${order.status}`}>
-                {/* Заглавка */}
                 <div className="order-head">
                   <div className="order-title">
                     <i className="fa-solid fa-receipt" />
@@ -351,10 +416,7 @@ export default function OrdersBoard({ station }) {
                       {allowResetReprint(order) && (
                         <button
                           className="btn btn-small btn-ghost"
-                          onClick={() => {
-                            resetPrintedForOrder(station, order);
-                            showMsg("Печат", "Разрешен е повторен печат за тази поръчка.");
-                          }}
+                          onClick={() => { resetPrintedForOrder(station, order); showMsg("Печат", "Разрешен е повторен печат за тази поръчка."); }}
                           title="Разреши повторен печат"
                         >
                           <i className="fa-regular fa-clock-rotate-left" />{" "}
@@ -365,7 +427,6 @@ export default function OrdersBoard({ station }) {
                   </div>
                 </div>
 
-                {/* Таблица с ястия */}
                 <table className="items">
                   <thead>
                     <tr>
@@ -395,7 +456,6 @@ export default function OrdersBoard({ station }) {
                   </tbody>
                 </table>
 
-                {/* Статус на поръчката */}
                 <div className="order-status-picker">
                   <span className="order-status-label">Промени статус на поръчката:</span>
                   <OrderStatusPicker
@@ -417,14 +477,13 @@ export default function OrdersBoard({ station }) {
           <button className="btn" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
             Назад
           </button>
-          <span className="muted">стр. {meta.current_page} от {meta.last_page}</span>
-          <button className="btn" disabled={page >= meta.last_page} onClick={() => setPage((p) => p + 1)}>
+          <span className="muted">стр. {meta?.current_page ?? 1} от {meta?.last_page ?? 1}</span>
+          <button className="btn" disabled={page >= (meta?.last_page ?? 1)} onClick={() => setPage((p) => p + 1)}>
             Напред
           </button>
         </div>
       )}
 
-      {/* Модал: добавяне на нов ред към поръчка */}
       <AddOrderItemModal
         open={!!addItemForOrder}
         station={station}
@@ -451,27 +510,21 @@ export default function OrdersBoard({ station }) {
           try {
             const { data } = await createOrderItem(order.id, payload);
             const real = data?.data || data;
-
             setOrders((cur) =>
-              cur.map((o) => {
-                if (o.id !== order.id) return o;
-                return { ...o, items: o.items.map((it) => (it.id === tempId ? real : it)) };
-              })
+              cur.map((o) =>
+                o.id !== order.id ? o : { ...o, items: o.items.map((it) => (it.id === tempId ? real : it)) }
+              )
             );
             setAddItemForOrder(null);
-          } catch (e) {
+          } catch {
             setOrders((cur) =>
-              cur.map((o) => {
-                if (o.id !== order.id) return o;
-                return { ...o, items: o.items.filter((it) => it.id !== tempId) };
-              })
+              cur.map((o) => (o.id !== order.id ? o : { ...o, items: o.items.filter((it) => it.id !== tempId) }))
             );
             showMsg("Грешка", "Неуспешно добавяне на ред към поръчката.");
           }
         }}
       />
 
-      {/* Модал за съобщения */}
       {msg && (
         <Modal
           open
