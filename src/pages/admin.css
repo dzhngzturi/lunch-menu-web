@@ -86,11 +86,49 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 .modal-actions{ display: flex; justify-content: flex-end; gap: .5rem; }
 
 /* Мини бутони (ако нямаш глобални) */
-.btn{ padding: .5rem .8rem; border-radius: .5rem; cursor: pointer; border: 1px solid transparent; }
-.btn-primary{ background: #2563eb; color:#fff; border-color:#2563eb; }
-.btn-primary:hover{ filter: brightness(1.05); }
-.btn-danger{ background: #c33; color:#fff; border-color:#c33; }
-.btn-danger:hover{ filter: brightness(1.05); }
+.btn{  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  transition: background 0.2s; }
+
+  /* Primary – син */
+.btn.primary {
+  background-color: #2563eb;   /* синьо (можеш да смениш по твой вкус) */
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background-color: #1e4ed8;
+}
+
+/* Secondary – сиво */
+.btn.secondary {
+  background-color: #6b7280;
+  color: #fff;
+}
+.btn.secondary:hover {
+  background-color: #4b5563;
+}
+
+/* Danger – червен */
+.btn.danger {
+  background-color: #dc2626;
+  color: #fff;
+}
+.btn.danger:hover {
+  background-color: #b91c1c;
+}
+
+/* Размери */
+.btn.sm { font-size: 0.875rem; padding: 4px 12px; }
+.btn.lg { font-size: 1rem; padding: 8px 18px; }
+
+
 .btn-ghost{ background: transparent; border-color:#bbb; color:#333; }
 .btn-ghost:hover{ background:#f5f5f5; }
 
@@ -227,8 +265,7 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 .pill-done { background:#e6e6e6; color:#545454; }
 .pill-cancel { background:#ffe9ea; color:#ba2b2b; }
 
-/* карта/списък */
-.card { background:#fff; border:1px solid #eceff5; border-radius:12px; padding:14px; }
+
 /* Toolbar (филтри + бутони) */
 .toolbar{
   display:flex;
@@ -851,4 +888,526 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
     z-index:25;
   }
   .admin-overlay.show{ display:block; }
+}
+
+
+/* Хедър контейнер */
+.admin-header, .admin-topbar, header.admin-shell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Избутай logout-а вдясно */
+.admin-header .logout,
+.admin-topbar .logout,
+header.admin-shell .logout {
+  margin-left: auto;
+}
+
+/* Визия на бутона “Изход” да е като останалите (danger) */
+.logout .btn,
+button.logout-btn {
+  background: #ef4444;           /* червено */
+  border: 1px solid #ef4444;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 10px;
+  line-height: 1.2;
+}
+.logout .btn:hover,
+button.logout-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+.logout .btn:active,
+button.logout-btn:active {
+  transform: translateY(0.5px);
+}
+
+
+
+/* ================== STAFF PAGE — HARD OVERRIDE ================== */
+/* контейнер */
+.admin-main .staff-page{max-width:1200px;margin:0 auto;padding:16px}
+
+/* toolbar */
+.admin-main .staff-page .toolbar{
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:14px
+}
+.admin-main .staff-page .toolbar input{
+  height:36px;padding:0 12px;border:1px solid #d6d6e0;border-radius:10px;min-width:280px;background:#fff
+}
+.admin-main .staff-page .toolbar .btn,
+.admin-main .staff-page .toolbar button{
+  height:36px;padding:0 12px;border-radius:10px;border:1px solid #d6d6e0;background:#fff
+}
+.admin-main .staff-page .toolbar .btn.primary,
+.admin-main .staff-page .toolbar button.primary{
+  background:#2f66ff;border-color:#2f66ff;color:#fff
+}
+
+/* карта-обвивка за таблицата */
+.admin-main .staff-page .items{
+  background:#fff;border:1px solid #e9e9f2;border-radius:14px;overflow:hidden;
+  box-shadow:0 4px 12px rgba(20,20,50,.04)
+}
+
+/* таблица */
+.admin-main .staff-page .items table{width:100%;border-collapse:collapse}
+.admin-main .staff-page .items thead th{
+  background:#f6f7fb;color:#3a3a4b;text-align:left;font-weight:600;
+  padding:10px 12px;border-bottom:1px solid #ebecf5;font-size:14px
+}
+.admin-main .staff-page .items tbody td{
+  padding:10px 12px;border-bottom:1px solid #f1f2f8;color:#222
+}
+.admin-main .staff-page .items tbody tr:hover{background:#fafbff}
+.admin-main .staff-page .items tbody tr:last-child td{border-bottom:none}
+
+/* бутони в таблицата – правим ги 32px и еднакви */
+.admin-main .staff-page .items tbody button,
+.admin-main .staff-page .items tbody .btn{
+  height:32px !important;line-height:32px !important;
+  padding:0 10px;border-radius:8px;border:1px solid #d6d6e0;background:#fff;display:inline-flex;align-items:center;gap:6px
+}
+.admin-main .staff-page .items tbody button:hover{background:#f7f7fb}
+
+/* alert-и */
+.admin-main .staff-page .alert{
+  padding:10px 12px;border-radius:12px;background:#f5f7ff;color:#1f2a55;margin-bottom:10px
+}
+.admin-main .staff-page .alert.error{background:#fff1f1;color:#9a1732;border:1px solid #ffd7dc}
+
+/* pager */
+.admin-main .staff-page .pager{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.admin-main .staff-page .pager button{height:34px;padding:0 12px;border:1px solid #d6d6e0;border-radius:10px;background:#fff}
+
+/* modal – ако ползваш инлайн модала от компонента */
+.admin-main .staff-page .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center}
+.admin-main .staff-page .modal .backdrop{position:absolute;inset:0;background:rgba(0,0,20,.5)}
+.admin-main .staff-page .modal-card{
+  position:relative;z-index:1;width:min(560px,calc(100% - 24px));background:#fff;border-radius:16px;
+  border:1px solid #e9e9f2;box-shadow:0 24px 48px rgba(16,24,40,.14);overflow:hidden
+}
+.admin-main .staff-page .modal-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid #eef0f6
+}
+.admin-main .staff-page .modal-head h3{font-size:18px;margin:0}
+.admin-main .staff-page .modal-head > button{height:32px;width:32px;border-radius:8px;border:1px solid #e0e2ea;background:#fff}
+.admin-main .staff-page .modal-body{display:grid;gap:10px;padding:14px 16px}
+.admin-main .staff-page .modal-body label{display:grid;gap:6px;font-size:14px;color:#333}
+.admin-main .staff-page .modal-body input,
+.admin-main .staff-page .modal-body select{
+  height:36px;padding:0 10px;border:1px solid #d6d6e0;border-radius:10px;background:#fff
+}
+.admin-main .staff-page .modal-foot{
+  display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #eef0f6
+}
+.admin-main .staff-page .modal-foot button{height:36px;padding:0 12px;border-radius:10px;border:1px solid #d6d6e0;background:#fff}
+.admin-main .staff-page .modal-foot .btn.primary{background:#2f66ff;border-color:#2f66ff;color:#fff}
+
+/* мобилни корекции */
+@media (max-width:900px){
+  .admin-main .staff-page .toolbar{grid-template-columns:1fr}
+  .admin-main .staff-page .toolbar input{min-width:0;width:100%}
+  .admin-main .staff-page .items thead{display:none}
+  .admin-main .staff-page .items tbody tr{display:grid;gap:8px;padding:10px 8px;border-bottom:1px solid #f1f2f8}
+  .admin-main .staff-page .items tbody td{border:none;padding:0 8px}
+  .admin-main .staff-page .items tbody td:last-child{margin-top:6px}
+}
+
+
+
+
+/* ================== STAFF PAGE FINAL FIX ================== */
+.admin-main .staff-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Toolbar */
+.admin-main .staff-page .toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.admin-main .staff-page .toolbar input {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d6d6e0;
+  border-radius: 8px;
+  min-width: 260px;
+  background: #fff;
+}
+.admin-main .staff-page .toolbar button {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #d6d6e0;
+  background: #fff;
+  cursor: pointer;
+}
+.admin-main .staff-page .toolbar button.primary {
+  background: #2f66ff;
+  border-color: #2f66ff;
+  color: #fff;
+}
+
+/* Table wrapper */
+.admin-main .staff-page .items {
+  background: #fff;
+  border: 1px solid #e9e9f2;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(20,20,50,.04);
+}
+.admin-main .staff-page .items table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-main .staff-page .items thead th {
+  background: #f6f7fb;
+  color: #3a3a4b;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ebecf5;
+  font-size: 14px;
+  text-align: left;
+}
+.admin-main .staff-page .items tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f2f8;
+  color: #222;
+}
+.admin-main .staff-page .items tbody tr:hover {
+  background: #fafbff;
+}
+.admin-main .staff-page .items tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Actions column */
+.admin-main .staff-page .items th.actions,
+.admin-main .staff-page .items td.actions {
+  width: 240px;
+  text-align: right;
+  white-space: nowrap;
+}
+.admin-main .staff-page .items td.actions .btn + .btn {
+  margin-left: 8px;
+}
+
+/* Buttons inside table */
+.admin-main .staff-page .items td.actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 110px;
+  padding: 0 12px;
+  border: 1px solid #d6d6e0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-main .staff-page .items td.actions button:hover {
+  background: #f7f7fb;
+}
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+}
+.badge--ok {
+  background: #eaffe9;
+  border: 1px solid #d3f3cf;
+  color: #166b3b;
+}
+.badge--off {
+  background: #fff3f3;
+  border: 1px solid #ffd8de;
+  color: #952642;
+}
+
+/* Pager */
+.admin-main .staff-page .pager {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.admin-main .staff-page .pager button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #d6d6e0;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Modal */
+.admin-main .staff-page .modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+}
+.admin-main .staff-page .modal .backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,20,.5);
+}
+.admin-main .staff-page .modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, calc(100% - 24px));
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e9e9f2;
+  box-shadow: 0 24px 48px rgba(16,24,40,.14);
+  overflow: hidden;
+}
+.admin-main .staff-page .modal-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef0f6;
+}
+.admin-main .staff-page .modal-body {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+}
+.admin-main .staff-page .modal-body input,
+.admin-main .staff-page .modal-body select {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #d6d6e0;
+  border-radius: 8px;
+}
+.admin-main .staff-page .modal-foot {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid #eef0f6;
+}
+
+/* Основен контейнер на съдържанието – не допускай хор. скрол */
+.admin-main, .admin-content {
+  overflow-x: hidden;
+}
+
+/* Контейнерът на поръчките да е прилепен и равен */
+.orders-board, .orders, .kitchen-board {
+  width: 100%;
+  margin-left: 0;
+  padding-left: 0;   /* ако имаш нужда от малко въздух – смени на 8px/12px */
+}
+
+/* Таблицата вътре да не се центрира от margin:auto */
+.orders .table, .orders table,
+.kitchen-board .table, .kitchen-board table {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  border-collapse: separate;   /* за да пазиш закръгленията */
+}
+
+/* Ляво подравняване по колони за всеки случай */
+.orders th, .orders td,
+.kitchen-board th, .kitchen-board td {
+  text-align: left;
+}
+
+/* Ако картите на поръчките имат вътрешни отстъпи – намали леко */
+.order-card, .order-box {
+  padding-left: 10px;
+  padding-right: 10px;   /* симетрия, за да не „бута“ вдясно */
+}
+
+
+/* Без хоризонтален скрол на съдържанието */
+.admin-main, .admin-container, .admin-content { overflow-x: hidden; }
+
+/* Orders/Kitchen board – да е плътно вляво и да не центрира таблици */
+.orders, .kitchen-board, .orders-board { width: 100%; margin-left: 0; padding-left: 0; }
+.orders .table, .orders table,
+.kitchen-board .table, .kitchen-board table {
+  width: 100%;
+  margin-left: 0; margin-right: 0;
+  border-collapse: separate;
+}
+.orders th, .orders td,
+.kitchen-board th, .kitchen-board td { text-align: left; }
+
+/* Карта на поръчка – вътрешните отстъпи да не бутат вдясно */
+.order, .order-card, .order-box { padding-left: 10px; padding-right: 10px; }
+
+/* Toolbar на поръчките – да пренася на малки екрани и да не разтяга страницата */
+.toolbar { display:flex; gap:.75rem; align-items:center; flex-wrap: wrap; }
+.toolbar .filters { display:flex; gap:.5rem; min-width:0; flex:1 1 260px; }
+.toolbar .spacer { flex:1; }
+@media (max-width:640px){
+  .toolbar { position: sticky; top: 0; z-index: 5; background:#fff;
+             padding:.5rem .25rem; border-bottom:1px solid #eef1f4; }
+}
+
+/* Таблица с ястия – мобилен „cards“ режим (без да раздува ширина) */
+@media (max-width:640px){
+  .items thead { display:none; }
+  .items, .items tbody, .items tr, .items td { display:block; width:100%; }
+  .items tr { background:#fff; border:1px solid #eceff3; border-radius:12px; margin-bottom:.65rem; }
+  .items td { display:flex; justify-content:space-between; gap:.75rem; padding:.25rem 0; }
+  .items td::before { content: attr(data-th); color:#6b7280; font-weight:600; }
+}
+
+/* Пикер за статус на поръчка – да се пречупва, да не „прелива“ */
+.order-status-picker { display:flex; align-items:center; gap:12px; flex-wrap: wrap; }
+.order-status-options { display:flex; flex-wrap: wrap; gap:8px; }
+
+/* Danger/ghost/primary бутони – еднаква височина */
+.btn, button { line-height: 1.2; }
+
+/* Бутон „Изход“ (горе) – danger стил */
+.logout .btn, button.logout-btn {
+  background:#ef4444; border:1px solid #ef4444; color:#fff; font-weight:600;
+  padding:8px 14px; border-radius:10px;
+}
+.logout .btn:hover, button.logout-btn:hover { background:#dc2626; border-color:#dc2626; }
+
+/* === Dishes page – full width + better table === */
+
+/* да не ограничава ширината в средата */
+.admin-main { padding: 16px 24px; }
+.admin-container { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
+
+/* toolbar по-стегнато и с дистанции */
+.dishes-page .toolbar{
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+}
+.dishes-page .toolbar .spacer{ flex:1; }
+
+/* таблицата да заеме 100% */
+.table-responsive{ width:100%; overflow-x:auto; }
+.admin-table{ width:100%; border-collapse:separate; border-spacing:0; background:#fff;
+  border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.04);
+}
+.admin-table thead th{
+  background:#f7f9fb; color:#3a4252; font-weight:600;
+  padding:12px 16px; border-bottom:1px solid #ecedf3;
+}
+.admin-table td{ padding:12px 16px; border-bottom:1px solid #f0f2f6; }
+.admin-table tbody tr:last-child td{ border-bottom:none; }
+.admin-table td.right{ text-align:right; }
+
+/* малко въздух между таблицата и пагинацията */
+.dishes-page .pager{ margin-top:16px; }
+.dishes-page .pager.center{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+}
+
+/* фино hover за редовете */
+.admin-table tbody tr:hover td{ background:#fbfcfe; }
+
+.dash-card {
+  background:#fff;
+  border:1px solid #eceff3;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+/* NotFound */ 
+
+.notfound-wrapper {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+}
+
+.notfound-card {
+  text-align: center;
+  padding: 32px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.notfound-card h1 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.notfound-card p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.notfound-card a.btn.primary {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.notfound-card a.btn.primary:hover {
+  background: #1e4fc2;
+}
+
+
+.dashboard {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.dashboard h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.dashboard p {
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+
+.card p {
+  margin-bottom: 1rem;
+  font-size: .95rem;
+  color: #4b5563;
 }

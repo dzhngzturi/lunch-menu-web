@@ -152,34 +152,59 @@ export default function OrdersReport() {
   }, [orders]);
 
   const exportCSV = () => {
-    const rows = [
-      ["ID", "Дата", "Маса", "Клиент", "Статус", "Редове", "Общо(лв.)"],
-      ...orders.map(o => {
-        const total =
-          typeof o.total_cents === "number"
-            ? (o.total_cents / 100).toFixed(2)
-            : ( (o.items || []).reduce((s, it) => s + ((it.price_cents||0)/100) * (it.qty||1), 0).toFixed(2) );
-        const date = o.created_at || o.updated_at || "";
-        return [
-          o.id,
-          date,
-          o.table_no ?? "",
-          o.customer_name ?? "",
-          o.status ?? "",
-          (o.items || []).length,
-          total
-        ];
-      })
+  if (!orders.length) return;
+
+  const header = ["ID","Дата","Маса","Клиент","Статус","Редове","Общо"];
+
+  // сглобяваме редовете
+  const rows = orders.map(o => {
+    const total =
+      typeof o.total_cents === "number"
+        ? o.total_cents / 100
+        : (o.items || []).reduce((s, it) => s + ((it.price_cents || 0) / 100) * (it.qty || 1), 0);
+
+    return [
+      o.id ?? "",
+      // държим датата като текст за да не я „преобръща“
+      fmtDateBG(o.created_at || o.updated_at || ""),
+      o.table_no ?? "",
+      o.customer_name ?? "",
+      STATUS_BG[o.status] || o.status || "",
+      (o.items || []).length,
+      // <- важно: истинско число за Excel (десетична запетая)
+      // подаваме без кавички и със запетая
+      Number(total.toFixed(2))
     ];
-    const csv = rows.map(r => r.map(x => `"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    a.href = url;
-    a.download = "orders-report.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+  });
+
+  const delimiter = ";";
+
+  // функция: как да запишем клетка за CSV
+  const cell = (v, colIdx) => {
+    // последната колона „Общо“ е число -> BG Excel очаква запетая
+    if (colIdx === 6 && typeof v === "number") {
+      return String(v).replace(".", ","); // 8.90 -> 8,90
+    }
+    // всичко друго като текст в кавички
+    return `"${String(v).replace(/"/g, '""')}"`;
   };
+
+  const body = [header, ...rows]
+    .map(r => r.map(cell).join(delimiter))
+    .join("\n");
+
+  // BOM за кирилица
+  const csv = "\uFEFF" + body;
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = "orders-report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 
   return (
     <div className="card report-card">

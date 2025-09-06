@@ -42,7 +42,7 @@ export default function CategoriesTable() {
   };
 
   return (
-    <div>
+    <div className='categories-page'>
       <h1>Категории</h1>
 
       <div className="toolbar">

@@ -39,13 +39,20 @@ api.interceptors.response.use(
 
 // Login → очакваме 201 + { access_token, token_type:'Bearer', user }
 export async function login(email, password) {
-  const { data, status } = await api.post('/login', { email, password });
-  if (status !== 201) throw new Error('Unexpected login status');
+  const res = await api.post('/login', { email, password });
+  const data = res.data || {};
+
+  // приемаме 200/201 + валидно тяло
+  if (!data.access_token || !data.user) {
+    throw new Error('Unexpected login response');
+  }
+
   localStorage.setItem('token', data.access_token);
   localStorage.setItem('user', JSON.stringify(data.user));
   window.dispatchEvent(new Event('auth-changed'));
   return data.user;
 }
+
 
 export async function me() {
   const { data } = await api.get('/me');
@@ -120,14 +127,16 @@ export async function listOrdersAll(params = {}) {
   return all;
 }
 
-// ➕ Добавяне на ред към поръчка
+//  Добавяне на ред към поръчка
 export const createOrderItem = (orderId, payload) =>
   api.post(`/orders/${orderId}/items`, payload); // { dish_id, qty, note? }
 
-// ✏️ Редакция на ред
+//  Редакция на ред
 export const updateOrderItem = (orderId, itemId, payload) =>
   api.patch(`/orders/${orderId}/items/${itemId}`, payload); // { qty?, note? }
 
-// 🗑 Премахване на ред
+// Премахване на ред
 export const deleteOrderItem = (orderId, itemId) =>
   api.delete(`/orders/${orderId}/items/${itemId}`);
+
+/* ================== STAFF (admin only) ================== */

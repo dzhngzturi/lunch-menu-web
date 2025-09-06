@@ -1,0 +1,293 @@
+/* ===== Scope: само в StaffPage ===== */
+.staff-page {
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --gray: #f3f6fb;
+  --gray-hover: #e9eef7;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --muted: #6b7280;
+  --border: #ecedf3;
+  --row: #f7f9fc;
+}
+
+/* toolbar */
+.staff-page .toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.staff-page .toolbar .spacer { flex: 1; }
+.staff-page .toolbar input {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* бутони (единен стил) */
+.staff-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background .2s, color .2s, box-shadow .2s, border-color .2s;
+  user-select: none;
+}
+
+.staff-page .btn.sm { padding: 6px 10px; font-size: 12px; }
+
+.staff-page .btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+
+/*Primary*/
+
+.staff-page .btn.primary {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: #2563eb !important;
+}
+
+.staff-page .btn-primary:hover:not(:disabled) {
+  background-color: #1d4ed8 !important;  /* по-тъмен син */
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+
+.staff-page .sbtn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/*Secondary*/
+
+.staff-page .btn-secondary{ background: var(--gray);  color: #111827; border-color: #e5e7eb; }
+.btn.secondary {
+  background-color: #6c757d!important;
+  color: #fff!important;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.secondary:hover {
+  background-color: #5a6268!important;
+}
+.staff-page .btn-secondary:hover:not(:disabled){ background: var(--gray-hover); box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+
+/*Danger*/
+
+.staff-page .btn-danger   { background: var(--danger); color: #fff; border-color: var(--danger); }
+.staff-page .btn-danger:hover:not(:disabled)   { background: var(--danger-hover); box-shadow: 0 4px 14px rgba(220,38,38,.22); }
+
+
+
+/* таблица */
+.staff-page .table-responsive { width: 100%; overflow-x: auto; }
+.staff-page .admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,.04);
+  font-size: 14px;
+  color: #283046;
+}
+.staff-page .admin-table thead th {
+  background: var(--row);
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #3a4252;
+  border-bottom: 1px solid var(--border);
+}
+.staff-page .admin-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f2f6;
+}
+.staff-page .admin-table tbody tr:last-child td { border-bottom: none; }
+.staff-page .admin-table td.actions { white-space: nowrap; text-align: right; }
+.staff-page .admin-table td.actions .sbtn + .sbtn { margin-left: 8px; }
+
+/* пагинация – център */
+.staff-page .pager.pager-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.staff-page .pager.pager-center .muted { color: var(--muted); font-size: 13px; }
+
+/* Мобилен изглед → cards (с по-силен selector + !important при нужда) */
+@media (max-width: 768px) {
+  .staff-page .admin-table thead { display: none !important; }
+  .staff-page .admin-table, 
+  .staff-page .admin-table tbody, 
+  .staff-page .admin-table tr, 
+  
+  .staff-page .admin-table tr {
+    background: #fff;
+    margin: 12px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.03);
+  }
+  .staff-page .admin-table td {
+    border: none !important;
+    border-bottom: 1px dashed #eef1f6 !important;
+    padding: 10px 0 !important;
+  }
+  .staff-page .admin-table td:last-child { border-bottom: none !important; }
+
+  .staff-page .admin-table td {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px !important;
+  }
+  .staff-page .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #4b5563;
+    margin-right: 12px; 
+  }
+  /* Действия – бутоните да стоят вдясно */
+  .staff-page .admin-table td.actions {
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 10px;
+  }
+
+
+
+}
+
+/* Outline info */
+.staff-page .sbtn-info {
+  background: #fff;
+  color: #0ea5e9;
+  border: 1px solid #0ea5e9;
+}
+.staff-page .sbtn-info:hover:not(:disabled) {
+  background: #0ea5e9;
+  color: #fff;
+}
+
+
+/* ===== Confirm modal (scoped в .staff-page) ===== */
+/* ===== MODAL (фиксиран, центриран, със силни цветове) ===== */
+.staff-page .modal{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;                /* центриране без transform */
+  align-items: center;
+  justify-content: center;
+}
+
+.staff-page .modal .backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(17,24,39,.45);
+  backdrop-filter: blur(2px);
+  z-index: 0;                   /* под картата */
+}
+
+.staff-page .modal-card{
+  position: relative;
+  z-index: 1;                   /* над backdrop-а */
+  width: min(560px, calc(100% - 32px));
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.14);
+  overflow: hidden;
+}
+
+/* header */
+/* ==== Staff modal: close (X) button ==== */
+.staff-page .modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.staff-page .modal-head > button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f3f6fb;          /* светлосиво „chip“ */
+  color: #6b7280;               /* видим X */
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.staff-page .modal-head > button:hover {
+  background: #e9eef7;
+  color: #111827;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+.staff-page .modal-head > button:active {
+  transform: translateY(1px);
+}
+
+.staff-page .modal-head h3{ margin:0; font:700 18px/1.1 system-ui; color:#111827; flex:1; }
+.staff-page .modal-head .icon{
+  width:36px;height:36px;border-radius:9999px;display:grid;place-items:center;
+  background:#fee2e2;color:#b91c1c;font-weight:800;
+}
+/* X бутон – видим */
+.staff-page .modal-head .x{
+  background:transparent;border:0;cursor:pointer;
+  font-size:20px; line-height:1; padding:4px 8px;
+  color:#6b7280; border-radius:8px;
+}
+.staff-page .modal-head .x:hover{ color:#111827; background:#f3f4f6; }
+
+/* body & foot */
+.staff-page .modal-body{ padding:18px 20px; color:#111827; line-height:1.6; }
+.staff-page .modal-foot{
+  display:flex; justify-content:flex-end; gap:10px;
+  padding:14px 16px; background:#f9fafb; border-top:1px solid var(--border);
+}
+.staff-page .modal-foot .btn.sm{ min-width:110px; }
+
+/* по-силни цветове в модала, за да не ги “презаписват” глобални правила */
+.staff-page .modal .btn.danger{
+  background:#dc2626 !important; border-color:#dc2626 !important; color:#fff !important;
+}
+.staff-page .modal .btn.danger:hover{ background:#b91c1c !important; }
+
+.staff-page .modal .btn.secondary{
+  background:#eef2f7 !important; border-color:#e5e7eb !important; color:#111827 !important;
+}
+.staff-page .modal .btn.secondary:hover{ background:#e5e9f2 !important; }
+
+

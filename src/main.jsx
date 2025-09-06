@@ -3,37 +3,41 @@ import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./App.css";
+import { AuthProvider } from "./auth";
 
-// PUBLIC layout & pages
+// PUBLIC
 const SiteLayout      = lazy(() => import("./layout/SiteLayout.jsx"));
 const Home            = lazy(() => import("./pages/Home.jsx"));
 const PublicMenu      = lazy(() => import("./pages/PublicMenu.jsx"));
 const Contact         = lazy(() => import("./pages/Contact.jsx"));
 const About           = lazy(() => import("./pages/About.jsx"));
 
-// Auth pages (без layout!)
+// AUTH
 const Login           = lazy(() => import("./pages/Login.jsx"));
 const Logout          = lazy(() => import("./pages/Logout.jsx"));
 
-// ADMIN layout & pages
+// ADMIN
+const NotFound        = lazy(() => import("./pages/NotFound.jsx"));
+const AdminDashboard  = lazy(() => import("./pages/AdminDashboard.jsx"));
 const AdminLayout     = lazy(() => import("./layout/AdminLayout.jsx"));
 const CategoriesTable = lazy(() => import("./pages/CategoriesTable.jsx"));
 const DishesTable     = lazy(() => import("./pages/DishesTable.jsx"));
+const DishNew         = lazy(() => import("./pages/DishNew.jsx"));
 const Orders          = lazy(() => import("./pages/Orders.jsx"));
 const OrdersBoard     = lazy(() => import("./pages/OrdersBoard.jsx"));
-const OrderCreate = lazy(() => import("./pages/OrderCreate.jsx"));
-const OrdersReport = lazy(() => import("./pages/OrdersReport.jsx"));
+const OrdersReport    = lazy(() => import("./pages/OrdersReport.jsx"));
+const OrderCreate     = lazy(() => import("./pages/OrderCreate.jsx"));
+const StaffPage       = lazy(() => import("./pages/StaffPage.jsx"));
 
-import RoleRoute from "./routes/RoleRoute.jsx";
+import RequireAuth from "./components/RequireAuth.jsx";
+import RequireRole from "./components/RequireRole.jsx";
 
 const suspense = (el) => (
   <Suspense fallback={<div className="page-loading">Зареждане…</div>}>{el}</Suspense>
 );
 
-const NotFound = () => <div style={{ padding: 24 }}>Страницата не е намерена.</div>;
-
 const router = createBrowserRouter([
-  // === PUBLIC (с публичния layout) ===
+  // === PUBLIC ===
   {
     element: suspense(<SiteLayout />),
     children: [
@@ -41,77 +45,93 @@ const router = createBrowserRouter([
       { path: "menu",    element: suspense(<PublicMenu />) },
       { path: "contact", element: suspense(<Contact />) },
       { path: "about",   element: suspense(<About />) },
-      { path: "*",       element: <NotFound /> },
+      // ⚠️ НЯМА catch-all тук, за да НЕ се рендерира SiteLayout при 404
     ],
   },
 
-  // === AUTH (без никакъв layout – няма хедър/футър) ===
+  // === AUTH ===
   { path: "/login",  element: suspense(<Login />) },
   { path: "/logout", element: suspense(<Logout />) },
 
-  // === ADMIN (с отделен AdminLayout, пазен от RoleRoute) ===
+  // === ADMIN ===
   {
     path: "/admin",
     element: (
-      <RoleRoute roles={["admin", "staff"]}>
+      <RequireAuth>
         {suspense(<AdminLayout />)}
-      </RoleRoute>
+      </RequireAuth>
     ),
     children: [
-      { index: true, element: <Navigate to="orders/kitchen" replace /> },
+      // ✅ Остави само ЕДИН index (избери какво да е началото на админ панела)
+      { index: true, element: suspense(<AdminDashboard />) },
+      // или вместо горния ред може:
+      // { index: true, element: <Navigate to="dishes" replace /> },
 
-      // админ само
       {
         path: "categories",
         element: (
-          <RoleRoute roles={["admin"]}>
+          <RequireRole roles={["admin"]}>
             {suspense(<CategoriesTable />)}
-          </RoleRoute>
+          </RequireRole>
         ),
       },
       {
         path: "dishes",
         element: (
-          <RoleRoute roles={["admin"]}>
+          <RequireRole roles={["admin"]}>
             {suspense(<DishesTable />)}
-          </RoleRoute>
+          </RequireRole>
+        ),
+      },
+      {
+        path: "dishes/new",
+        element: (
+          <RequireRole roles={["admin"]}>
+            {suspense(<DishNew />)}
+          </RequireRole>
+        ),
+      },
+      {
+        path: "staff",
+        element: (
+          <RequireRole roles={["admin"]}>
+            {suspense(<StaffPage />)}
+          </RequireRole>
         ),
       },
 
-      // поръчки – admin + staff
       {
         path: "orders",
         element: suspense(<Orders />),
         children: [
-          { index: true,     element: <Navigate to="kitchen" replace /> },
-          { path: "kitchen", element: suspense(<OrdersBoard station="kitchen" />) },
-          { path: "bar",     element: suspense(<OrdersBoard station="bar" />) },
+          { index: true,       element: <Navigate to="kitchen" replace /> },
+          { path: "kitchen",   element: suspense(<OrdersBoard station="kitchen" />) },
+          { path: "bar",       element: suspense(<OrdersBoard station="bar" />) },
+          { path: "report",    element: suspense(<OrdersReport />) },
         ],
       },
       {
         path: "orders/create",
         element: (
-          <RoleRoute roles={["admin", "staff"]}>
+          <RequireRole roles={["admin","staff"]}>
             {suspense(<OrderCreate />)}
-          </RoleRoute>
+          </RequireRole>
         ),
       },
-      {
-        path: "orders",
-        element: suspense(<Orders />),
-        children: [
-          { index: true, element: <Navigate to="kitchen" replace /> },
-          { path: "kitchen", element: suspense(<OrdersBoard station="kitchen" />) },
-          { path: "bar",     element: suspense(<OrdersBoard station="bar" />) },
-          { path: "report",  element: suspense(<OrdersReport />) },   // <-- ново
-        ],
-      },
+
+      // 404 САМО за /admin/*
+      { path: "*", element: suspense(<NotFound />) },
     ],
   },
+
+  // === ГЛОБАЛЕН 404 (без SiteLayout) ===
+  { path: "*", element: suspense(<NotFound />) },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

@@ -17,6 +17,7 @@ import {
 } from "../utils/print-utils";
 import { echo } from "../lib/echo";
 
+
 const PER_PAGE = 20;
 
 const STATUS_LABEL_BG = {
@@ -26,6 +27,16 @@ const STATUS_LABEL_BG = {
   done: "Приключена",
   cancel: "Отказана",
 };
+
+// новите най-отгоре: created_at (ако има) или по id
+const sortItemsDesc = (items = []) =>
+  [...items].sort((a, b) => {
+    if (a?.created_at && b?.created_at) {
+      return new Date(b.created_at) - new Date(a.created_at);
+    }
+    return (b?.id ?? 0) - (a?.id ?? 0);
+  });
+
 
 /* ---------- бутони за статус на ЯСТИЕ ---------- */
 function ItemStatusButtons({ value, onPick, disabled = false }) {
@@ -221,8 +232,10 @@ export default function OrdersBoard({ station }) {
           if (isNew && soundArmedRef.current && soundRef.current) {
             try { soundRef.current.currentTime = 0; soundRef.current.play(); } catch {}
           }
-          const sorted = Array.from(byId.values()).sort((a, b) => b.id - a.id);
-          return sorted.slice(0, PER_PAGE);
+           const normalized = Array.from(byId.values())
+           .map(o => ({ ...o, items: sortItemsDesc(o.items) }))
+           .sort((a, b) => b.id - a.id);
+           return normalized.slice(0, PER_PAGE);
         });
 
         lastSyncRef.current = new Date().toISOString();
@@ -243,8 +256,10 @@ export default function OrdersBoard({ station }) {
     try {
       const { data } = await listOrders({ ...params, signal: ctrl.signal });
       const chunk = Array.isArray(data?.data) ? data.data : [];
-      const sorted = chunk.slice().sort((a, b) => b.id - a.id); // новите най-отгоре
-      setOrders(sorted);
+      const normalized = chunk
+      .map(o => ({ ...o, items: sortItemsDesc(o.items) }))
+      .sort((a, b) => b.id - a.id);
+      setOrders(normalized);
       if (data?.meta) setMeta(data.meta);
       hydratedRef.current = true;
       lastSyncRef.current = new Date().toISOString();
@@ -379,9 +394,11 @@ export default function OrdersBoard({ station }) {
         <ul className="orders-list">
           {orders.map((order) => {
             const isLocked = order.status === "done" || order.status === "cancel";
-            const itemsForStation = station
-              ? (order.items || []).filter((i) => i.station === station)
-              : (order.items || []);
+            const itemsForStation = sortItemsDesc(
+            station
+            ? (order.items || []).filter((i) => i.station === station)
+            : (order.items || [])
+          );
 
             return (
               <li key={order.id} className={`order is-${order.status}`}>
@@ -504,7 +521,7 @@ export default function OrdersBoard({ station }) {
           };
 
           setOrders((cur) =>
-            cur.map((o) => (o.id === order.id ? { ...o, items: [...o.items, optimisticItem] } : o))
+            cur.map((o) => (o.id === order.id ? { ...o, items: [optimisticItem, ...(o.items || [])] } : o))
           );
 
           try {
@@ -512,7 +529,7 @@ export default function OrdersBoard({ station }) {
             const real = data?.data || data;
             setOrders((cur) =>
               cur.map((o) =>
-                o.id !== order.id ? o : { ...o, items: o.items.map((it) => (it.id === tempId ? real : it)) }
+                o.id !== order.id ? o : { ...o, items: (o.items || []).map((it) => (it.id === tempId ? real : it))}
               )
             );
             setAddItemForOrder(null);
