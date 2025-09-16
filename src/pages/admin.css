@@ -1288,6 +1288,95 @@ button.logout-btn:active {
 .logout .btn:hover, button.logout-btn:hover { background:#dc2626; border-color:#dc2626; }
 
 /* === Dishes page – full width + better table === */
+.admin-table.dishes {
+  table-layout: fixed;   /* фиксирани колони */
+  width: 100%;
+}
+
+.admin-table.dishes th,
+.admin-table.dishes td {
+  text-align: left;
+  vertical-align: middle;
+  padding: 8px 12px;
+}
+
+/* Колона "Снимка" */
+.admin-table.dishes th:nth-child(1),
+.admin-table.dishes td:nth-child(1) {
+  width: 80px;  /* фиксирана ширина */
+  text-align: center;
+}
+
+/* Колона "Име" */
+.admin-table.dishes th:nth-child(2),
+.admin-table.dishes td:nth-child(2) {
+  width: 200px;
+}
+
+/* Колона "Категория" */
+.admin-table.dishes th:nth-child(3),
+.admin-table.dishes td:nth-child(3) {
+  width: 150px;
+}
+
+/* Колона "Тип меню" */
+.admin-table.dishes th:nth-child(4),
+.admin-table.dishes td:nth-child(4) {
+  width: 120px;
+}
+
+/* Колона "Станция" */
+.admin-table.dishes th:nth-child(5),
+.admin-table.dishes td:nth-child(5) {
+  width: 100px;
+}
+
+/* Колона "Цена" */
+.admin-table.dishes th:nth-child(6),
+.admin-table.dishes td:nth-child(6) {
+  width: 80px;
+  text-align: right;
+}
+
+/* Колона "Действия" */
+.admin-table.dishes th:last-child,
+.admin-table.dishes td:last-child {
+  width: 160px;
+  text-align: right;
+}
+
+
+/*Category Modal*/
+/* лек модал */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.modal {
+  width: min(520px, 92vw);
+  background: #fff; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+.modal-header { padding: 14px 16px; border-bottom: 1px solid #eee; }
+.modal-body   { padding: 16px; }
+.modal-actions{
+  display: flex; gap: 8px; justify-content: flex-end; padding: 12px 16px; border-top: 1px solid #eee;
+}
+.form-row { display: grid; gap: 6px; margin-bottom: 12px; }
+.form-row > label { font-weight: 600; }
+
+.btn-danger {
+  background-color: #dc3545; /* червено */
+  border: 1px solid #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+}
+
+
 
 /* да не ограничава ширината в средата */
 .admin-main { padding: 16px 24px; }
@@ -1411,3 +1500,180 @@ button.logout-btn:active {
   font-size: .95rem;
   color: #4b5563;
 }
+
+
+.co-table td.center, .co-table th.center {
+  text-align: center;
+}
+
+
+
+/* === ЛЕЙАУТ === */
+.admin-shell{
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 56px 1fr;   /* топбар + съдържание */
+  grid-template-columns: 260px 1fr;
+}
+
+/* топбарът заема цялата ширина на първия ред */
+.admin-topbar{
+  grid-row: 1;
+  grid-column: 1 / -1;
+}
+
+/* sidebar – ВАЖНО: flex колона + 100% височина */
+.admin-sidebar{
+  grid-row: 2;
+  grid-column: 1;
+  background:#0b1424;             /* тъмното синьо, както при теб */
+  color:#fff;
+  display:flex;                    /* <- ключово */
+  flex-direction:column;           /* <- ключово */
+  min-height: 0;                   /* да позволим overflow на менютата */
+}
+
+/* навигацията да пълни наличното, футърът отива долу */
+.admin-menu{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:16px;
+  flex: 1 1 auto;                  /* <- ключово: заема остатъка */
+  overflow-y:auto;                 /* скрол при много линкове */
+}
+
+.admin-menu-sep{
+  height:1px;
+  background:rgba(255,255,255,.08);
+  margin:10px 0;
+}
+
+/* футърът на sidebar-а */
+.admin-sidebar footer{
+  margin-top:auto;                 /* <- залепя го долу */
+  padding:12px 16px;
+  font-size:12px;
+  color:#9aa4b2;
+  border-top:1px solid rgba(255,255,255,.08);
+  line-height:1.4;
+}
+
+/* основно съдържание (вдясно) */
+.admin-main{
+  grid-row: 2;
+  grid-column: 2;
+  background:#f6f7fb;
+}
+.admin-container{ padding: 20px; }
+
+/* === Мобилно меню === */
+@media (max-width: 1024px){
+  .admin-shell{
+    grid-template-columns: 1fr;   /* скриваме постоянната колона */
+  }
+  .admin-sidebar{
+    position: fixed;
+    top: 56px;                     /* под топбара */
+    left: 0;
+    width: 84vw;
+    max-width: 360px;
+    height: calc(100vh - 56px);    /* <- важно за футъра долу */
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 50;
+  }
+  .admin-sidebar.open{
+    transform: translateX(0);
+  }
+  .admin-main{
+    grid-column: 1;
+  }
+}
+
+/* контейнер за филтъра */
+.filter-bar{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  margin:12px 0 10px;
+  flex-wrap:wrap;            /* по-добро поведение при мобилни */
+}
+
+/* input + бутон вдясно */
+.filter-bar .search-side{
+  display:flex;
+  gap:.5rem;
+  align-items:center;
+  margin-left:auto;
+}
+
+/* самите таблетки */
+.pill-tabs{
+  display:flex;
+  gap:6px;
+  padding:6px;
+  border:1px solid #e5e7eb;      /* gray-200 */
+  border-radius:9999px;
+  background:#f8fafc;            /* slate-50 */
+}
+
+.pill-tabs .pill{
+  border:0;
+  background:transparent;
+  padding:8px 14px;
+  border-radius:9999px;
+  font-weight:600;
+  color:#374151;                  /* gray-700 */
+  cursor:pointer;
+  transition:all .15s ease;
+  line-height:1;
+}
+
+.pill-tabs .pill:hover{
+  background:#e5e7eb;            /* gray-200 */
+}
+
+.pill-tabs .pill.active{
+  background:#111827;            /* gray-900 */
+  color:#fff;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.pill-tabs .pill:focus-visible{
+  outline:3px solid #2563eb;     /* blue-600 */
+  outline-offset:2px;
+}
+
+
+.tabs { display:flex; gap:.5rem; margin-bottom:.5rem; }
+.tab { padding:.4rem .7rem; border:1px solid #d1d5db; border-radius:999px; background:#fff; }
+.tab.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+
+.existing-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+  gap:.5rem;
+  max-height: 260px;
+  overflow:auto;
+  padding:.25rem 0;
+}
+.existing-item {
+  display:block;
+  border:2px solid transparent;
+  border-radius:10px;
+  padding:0;
+  background:#fff;
+  cursor:pointer;
+}
+.existing-item img {
+  display:block;
+  width:100%;
+  height:76px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.existing-item.selected { border-color:#2563eb; }
+
+.preview { margin-top:.5rem; }
+.preview img { max-width:220px; max-height:180px; border-radius:10px; display:block; }

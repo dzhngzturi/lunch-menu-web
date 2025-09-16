@@ -3,12 +3,15 @@ import { MapPin, Phone, Clock } from "lucide-react";
 
 export default function Contact() {
   return (
-    <>
+      <>
       <PageHero
-        title="Контакти"
-        subtitle="Ще се радваме да ви чуем"
-        image="/banners/contact.jpg"
-        height="min(46vh, 360px)"
+          title="Контакти"
+          subtitle="Ще се радваме да ви чуем"
+          image="/banners/hero-contact.png"
+          height="min(60vh, 520px)"   // по-високо за да се вижда по-добре
+          focus="50% 25%"             // мръдни фокуса нагоре (x% y%)
+          dark={0.40}                 // лек overlay
+          bgPosition="center 36%" 
       />
 
         {/* ТЪМНА ЛЕНТА */}
@@ -21,7 +24,7 @@ export default function Contact() {
               </div>
               <h3 className="contact-band__title">Адрес</h3>
               <p className="contact-band__text">
-                улица „Цар Симеон I“ №1,<br />Бургас, България
+                улица „Хан Аспарух“ №34,<br />Тервел, България
               </p>
             </div>
 
@@ -31,8 +34,7 @@ export default function Contact() {
                 <Phone size={32} strokeWidth={2.2} />
               </div>
               <h3 className="contact-band__title">Телефон за връзка</h3>
-              <p className="contact-band__text">087 820 0999</p>
-              <p className="contact-band__text">За доставка: 087 620 0061</p>
+              <p className="contact-band__text">+359 89 538 8692</p>
             </div>
 
             {/* Работно време */}
@@ -41,8 +43,8 @@ export default function Contact() {
                 <Clock size={32} strokeWidth={2.2} />
               </div>
               <h3 className="contact-band__title">Работно време</h3>
-              <p className="contact-band__text">Понеделник – Неделя</p>
-              <p className="contact-band__text">11:00 ч. – 23:00 ч.</p>
+              <p className="contact-band__text">Понеделник – Събота</p>
+              <p className="contact-band__text">11:00 ч. – 00:00 ч.</p>
             </div>
           </div>
         </section>
@@ -51,10 +53,10 @@ export default function Contact() {
       {/* Карта */}
      <section className="contact-map full-bleed">
       <iframe
-        title="RELAX bar&dinner – карта"
+        title="Bistro bar&dinner – карта"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        src="https://www.google.com/maps?q=Burgas%20Bulgaria&output=embed"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1441.092078404526!2d27.407238820237115!3d43.748272446231965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40a55fab10ca1e87%3A0x184124fe4784708!2sBistro%20Elit!5e0!3m2!1sbg!2sbg!4v1757946905986!5m2!1sbg!2sbg"
       />
     </section>
     </>

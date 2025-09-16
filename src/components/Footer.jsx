@@ -33,35 +33,46 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        {/* Лого + копирайт */}
-        <div className="footer-logo">
-          <img src="/logo-relax.png" alt="Relax" />
-          <div className="footer-copy">2025 © Relax</div>
+
+        {/* Дясна колона: навигация */}
+        <div className="footer-nav">
+          <nav>
+            <NavLink to="/" end>Начало</NavLink>
+            <NavLink to="/menu">Меню</NavLink>
+            <NavLink to="/about">За нас</NavLink>
+            <NavLink to="/contact">Контакти</NavLink>
+
+            {/* НЕ показваме публично „Админ“ */}
+            {/* Ако искаш да е видим само за логнат админ – разкоментирай: */}
+            {/* {loggedIn && isAdmin && (
+              <NavLink to="/admin" className="admin-link">Админ</NavLink>
+            )} */}
+          </nav>
         </div>
+
 
         {/* Клон Бургас */}
         <div className="footer-branch">
-          <h3>RELAX bar&dinner</h3>
+          <h3>Bistro bar&dinner</h3>
           <p className="footer-line">
-            <span className="ico">📍</span>
+            <span className="ico"></span>
             <a
               href="https://www.google.com/maps?q=ул.+Цар+Симеон+I,+Бургас"
               target="_blank"
               rel="noreferrer"
             >
-              ул. „Цар Симеон I“, Бургас, България
+              ул. „Хан Аспарух“ 34, Тервел, България
             </a>
           </p>
           <p className="footer-line">
-            <span className="ico">📞</span>
-            <a href="tel:+35987820099">087 820 0999</a>
+            <span className="ico"></span>
           </p>
           <p className="footer-line">
-            <span className="ico">🕒</span> Понеделник–Неделя · 11:00 – 23:00 ч.
+            <span className="ico"></span> Понеделник–Неделя · 11:00 – 00:00 ч.
           </p>
           <p className="footer-line">
-            <span className="ico">🚗</span> За доставка:{" "}
-            <a href="tel:+35987620061">087 620 0061</a>
+            <span className="ico"></span> За доставка:{" "}
+            <a href="tel:+35987620061">+359 89 538 8692</a>
           </p>
 
           <div className="footer-social">
@@ -81,33 +92,16 @@ export default function Footer() {
                 />
               </svg>
             </a>
-            <a href="#" aria-label="Tripadvisor" title="Tripadvisor">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M12 8a7 7 0 1 1-4.9 2.1A7 7 0 0 1 12 8zm-3 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 .001 4.001A2 2 0 0 0 15 12z"
-                  fill="currentColor"
-                />
-              </svg>
-            </a>
           </div>
         </div>
 
-        {/* Дясна колона: навигация */}
-        <div className="footer-nav">
-          <h3>Меню</h3>
-          <nav>
-            <NavLink to="/" end>Начало</NavLink>
-            <NavLink to="/menu">Меню</NavLink>
-            <NavLink to="/about">За нас</NavLink>
-            <NavLink to="/contact">Контакти</NavLink>
 
-            {/* НЕ показваме публично „Админ“ */}
-            {/* Ако искаш да е видим само за логнат админ – разкоментирай: */}
-            {/* {loggedIn && isAdmin && (
-              <NavLink to="/admin" className="admin-link">Админ</NavLink>
-            )} */}
-          </nav>
+         {/* Лого + копирайт */}
+        <div className="footer-logo">
+          <img src="/banners/logo-underground.png" alt="Bistro" />
+          <div className="footer-copy">2025 © Bistro Designed with ❤ by Dzhengiz Turhan</div>
         </div>
+
       </div>
 
       {/* Бутон нагоре */}

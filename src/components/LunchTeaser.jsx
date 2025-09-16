@@ -1,19 +1,23 @@
 // src/components/LunchTeaser.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getDishes } from "../api";
+import { getDishes, buildStorageUrl } from "../api";
 import MultiCarousel from "./MultiCarousel";
 
 export default function LunchTeaser() {
   const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
-    getDishes({ menu_type: "lunch" }).then(res => {
-      setDishes(res.data?.data ?? []);
-    });
+    let ignore = false;
+    (async () => {
+      const res = await getDishes({ menu_type: "lunch" });
+      const items = Array.isArray(res.data?.data) ? res.data.data : [];
+      if (!ignore) setDishes(items);
+    })();
+    return () => { ignore = true; };
   }, []);
 
-  const storageUrl = useMemo(() => `${import.meta.env.VITE_API_URL}/storage/`, []);
+  const getImg = (d) => d?.image_url || (d?.image ? buildStorageUrl(d.image) : null);
 
   if (!dishes.length) return null;
 
@@ -27,24 +31,34 @@ export default function LunchTeaser() {
 
       <MultiCarousel
         items={dishes}
-        renderItem={(item) => (
-          <article className="dish-card">
-            <div className="dish-media">
-              {item.image && <img src={storageUrl + item.image} alt={item.name} />}
-            </div>
-            <div className="dish-body">
-              <h3 className="dish-title">{item.name}</h3>
-              {item.description && <p className="dish-desc">{item.description}</p>}
-              <div className="dish-footer">
-                <span className="price">{Number(item.price).toFixed(2)} лв.</span>
+        renderItem={(item) => {
+          const img = getImg(item);
+          return (
+            <article className="dish-card">
+              <div className="dish-media">
+                {img && (
+                  <img
+                    src={img}
+                    alt={item.name}
+                    loading="lazy"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                )}
               </div>
-            </div>
-          </article>
-        )}
+              <div className="dish-body">
+                <h3 className="dish-title">{item.name}</h3>
+                {item.description && <p className="dish-desc">{item.description}</p>}
+                <div className="dish-footer">
+                  <span className="price">{Number(item.price ?? 0).toFixed(2)} лв.</span>
+                </div>
+              </div>
+            </article>
+          );
+        }}
       />
 
-      <div style={{ textAlign: "center", marginTop: 12 }}>
-        <Link to="/menu" className="btn btn-outline">Виж цялото меню</Link>
+      <div style={{ textAlign: "center", margin: 22 }}>
+        <Link to="/menu?type=lunch" className="btn btn-outline">Виж обедно меню</Link>
       </div>
     </section>
   );

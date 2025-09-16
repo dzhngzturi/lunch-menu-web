@@ -5,7 +5,9 @@ export default function Testimonials({
   autoPlay = true,
   interval = 6000,
   fullBleed = true,          // 100vw по подразбиране
-  height = "min(70vh, 640px)"
+  height = "min(70vh, 640px)",
+  bgPosition = "center 65%",
+  
 }) {
   const [index, setIndex] = useState(0);
   const timer = useRef(null);
@@ -35,7 +37,7 @@ export default function Testimonials({
   return (
     <section
       className={`testimonials ${fullBleed ? "full-bleed" : ""}`}
-      style={{ ["--t-h"]: height }}
+      style={{ ["--t-h"]: height, backgroundPosition:bgPosition }}
       onMouseEnter={pause}
       onMouseLeave={resume}
       aria-roledescription="carousel"

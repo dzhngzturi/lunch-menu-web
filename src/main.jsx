@@ -11,13 +11,14 @@ const Home            = lazy(() => import("./pages/Home.jsx"));
 const PublicMenu      = lazy(() => import("./pages/PublicMenu.jsx"));
 const Contact         = lazy(() => import("./pages/Contact.jsx"));
 const About           = lazy(() => import("./pages/About.jsx"));
-
+const DishDetails  = lazy(() => import("./pages/DishDetails.jsx"));
 // AUTH
 const Login           = lazy(() => import("./pages/Login.jsx"));
 const Logout          = lazy(() => import("./pages/Logout.jsx"));
 
 // ADMIN
-const NotFound        = lazy(() => import("./pages/NotFound.jsx"));
+const NotFoundAdmin       = lazy(() => import("./pages/NotFoundAdmin.jsx"));
+const NotFoundPublic       = lazy(() => import("./pages/NotFoundPublic.jsx"));
 const AdminDashboard  = lazy(() => import("./pages/AdminDashboard.jsx"));
 const AdminLayout     = lazy(() => import("./layout/AdminLayout.jsx"));
 const CategoriesTable = lazy(() => import("./pages/CategoriesTable.jsx"));
@@ -43,8 +44,11 @@ const router = createBrowserRouter([
     children: [
       { index: true,     element: suspense(<Home />) },
       { path: "menu",    element: suspense(<PublicMenu />) },
+      { path: "menu/dish/:id", element: suspense(<DishDetails />) },
       { path: "contact", element: suspense(<Contact />) },
       { path: "about",   element: suspense(<About />) },
+      { path: "*",   element: suspense(<NotFoundPublic />) },
+
       // ⚠️ НЯМА catch-all тук, за да НЕ се рендерира SiteLayout при 404
     ],
   },
@@ -120,12 +124,12 @@ const router = createBrowserRouter([
       },
 
       // 404 САМО за /admin/*
-      { path: "*", element: suspense(<NotFound />) },
+      { path: "*", element: suspense(<NotFoundAdmin />) },
     ],
   },
 
   // === ГЛОБАЛЕН 404 (без SiteLayout) ===
-  { path: "*", element: suspense(<NotFound />) },
+//{ path: "*", element: suspense(<NotFoundPublic />) },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

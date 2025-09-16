@@ -1,27 +1,38 @@
+// src/App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth';
 import RequireAuth from './components/RequireAuth';
 import RequireRole from './components/RequireRole';
 
-import AdminLayout from './layout/AdminLayout';      // ВАЖНО: правилен път
-import StaffPage from './pages/StaffPage';
-import DishesTable from './pages/DishesTable';
-import CategoriesTable from './pages/CategoriesTable';
+import SiteLayout from './layout/SiteLayout';
+import AdminLayout from './layout/AdminLayout';
 
 import Home from './pages/Home';
 import MenuPage from './pages/MenuPage';
+import Contact from './pages/Contact';     // ако нямаш – махни линка от навигацията
 import Login from './pages/Login';
+import NotFoundPublic from './pages/NotFoundPublic';
+
+import StaffPage from './pages/StaffPage';
+import DishesTable from './pages/DishesTable';
+import CategoriesTable from './pages/CategoriesTable';
+import NotFoundAdmin from './pages/NotFoundAdmin';
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="/menu" element={<MenuPage />} />
-          <Route path="/login" element={<Login />} />
+          {/* Публично дърво под SiteLayout */}
+          <Route element={<SiteLayout />}>
+            <Route index element={<Home />} />
+            <Route path="menu" element={<MenuPage />} />
+            <Route path="contact" element={<Contact />} />
+            {/* Публичен 404 */}
+            <Route path="*" element={<NotFoundPublic />} />
+          </Route>
 
-          {/* Админ дърво с вложени маршрути */}
+          {/* Админ дърво */}
           <Route
             path="/admin"
             element={
@@ -40,9 +51,12 @@ export default function App() {
                 </RequireRole>
               }
             />
+            {/* Админ 404 */}
+            <Route path="*" element={<NotFoundAdmin />} />
           </Route>
 
-          <Route path="*" element={<Home />} />
+          {/* Login извън публичния layout */}
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

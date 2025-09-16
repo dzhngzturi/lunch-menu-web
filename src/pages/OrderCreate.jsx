@@ -19,6 +19,9 @@ const selectStyles = {
     ":hover": { borderColor: "#9ca3af" }
   }),
   valueContainer: (b) => ({ ...b, padding: "4px 10px" }),
+   indicatorsContainer: (b) => ({ ...b, height: 44 }),
+   dropdownIndicator: (b) => ({ ...b, padding: "0 8px" }),
+   clearIndicator: (b) => ({ ...b, padding: "0 6px" }),
   menu: (b) => ({ ...b, zIndex: 25 }),
 };
 
@@ -174,6 +177,7 @@ export default function CreateOrder() {
             value={pickedDish}
             onChange={setPickedDish}
             placeholder="Избери ястие…"
+            classNamePrefix="rs"
           />
         </div>
         <div className="co-col" style={{ maxWidth: 120 }}>
@@ -205,13 +209,20 @@ export default function CreateOrder() {
         {items.length === 0 ? (
           <div className="empty">Няма добавени редове.</div>
         ) : (
-          <table className="co-table">
+           <table className="co-table">
+            <colgroup>
+              <col style={{ width: "52%" }} />         {/* Ястие */}
+              <col style={{ width: "10%" }} />         {/* Кол. */}
+              <col style={{ width: "18%" }} />         {/* Бележка */}
+              <col style={{ width: "18%" }} />         {/* Цена */}
+              <col style={{ width: "40px" }} />        {/* Х бутон (фиксирана) */}
+            </colgroup>
             <thead>
               <tr>
                 <th>Ястие</th>
-                <th className="a-right">Кол.</th>
+                <th>Кол.</th>           {/* премахнах a-right */}
                 <th>Бележка</th>
-                <th className="a-right">Цена</th>
+                <th>Цена</th>          {/* премахнах a-right */}
                 <th></th>
               </tr>
             </thead>
@@ -219,9 +230,9 @@ export default function CreateOrder() {
               {items.map((it, i) => (
                 <tr key={i}>
                   <td>{it.name}</td>
-                  <td className="a-right">{it.qty}</td>
+                  <td>{it.qty}</td>                 {/* без a-right */}
                   <td className="muted">{it.note || "—"}</td>
-                  <td className="a-right">{(it.price * it.qty).toFixed(2)} лв.</td>
+                  <td>{(it.price * it.qty).toFixed(2)} лв.</td>  {/* без a-right */}
                   <td className="a-right">
                     <button className="btn btn-small" onClick={() => removeItem(i)}>✕</button>
                   </td>
@@ -231,7 +242,7 @@ export default function CreateOrder() {
             <tfoot>
               <tr>
                 <td colSpan={3} className="a-right strong">Общо:</td>
-                <td className="a-right strong">{total.toFixed(2)} лв.</td>
+                <td className="strong">{total.toFixed(2)} лв.</td> {/* само strong */}
                 <td></td>
               </tr>
             </tfoot>

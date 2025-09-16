@@ -154,7 +154,7 @@ export default function OrdersReport() {
   const exportCSV = () => {
   if (!orders.length) return;
 
-  const header = ["ID","Дата","Маса","Клиент","Статус","Редове","Общо"];
+  const header = ["ID","Дата","Маса","Клиент","Сервитьор","Статус","Редове","Общо"];
 
   // сглобяваме редовете
   const rows = orders.map(o => {
@@ -162,13 +162,15 @@ export default function OrdersReport() {
       typeof o.total_cents === "number"
         ? o.total_cents / 100
         : (o.items || []).reduce((s, it) => s + ((it.price_cents || 0) / 100) * (it.qty || 1), 0);
-
+    
+    const staffName = o.staff_name ?? o.staff?.name ?? "";
     return [
       o.id ?? "",
       // държим датата като текст за да не я „преобръща“
       fmtDateBG(o.created_at || o.updated_at || ""),
       o.table_no ?? "",
       o.customer_name ?? "",
+      staffName,  
       STATUS_BG[o.status] || o.status || "",
       (o.items || []).length,
       // <- важно: истинско число за Excel (десетична запетая)
@@ -178,11 +180,11 @@ export default function OrdersReport() {
   });
 
   const delimiter = ";";
-
+  const totalColIndex = header.indexOf("Общо");
   // функция: как да запишем клетка за CSV
   const cell = (v, colIdx) => {
     // последната колона „Общо“ е число -> BG Excel очаква запетая
-    if (colIdx === 6 && typeof v === "number") {
+    if (colIdx === totalColIndex && typeof v === "number") {
       return String(v).replace(".", ","); // 8.90 -> 8,90
     }
     // всичко друго като текст в кавички
@@ -296,6 +298,7 @@ export default function OrdersReport() {
                 <th>Дата</th>
                 <th>Маса</th>
                 <th>Клиент</th>
+                <th>Сервитьор</th>
                 <th>Статус</th>
                 <th>Редове</th>
                 <th className="a-right">Общо</th>
@@ -307,12 +310,15 @@ export default function OrdersReport() {
                   typeof o.total_cents === "number"
                     ? (o.total_cents / 100)
                     : ((o.items || []).reduce((s, it) => s + ((it.price_cents||0)/100) * (it.qty||1), 0));
+                    const staffName = o.staff_name ?? o.staff?.name ?? "";
+
                 return (
                   <tr key={o.id}>
                     <td>{o.id}</td>
                     <td>{fmtDateBG(o.created_at || o.updated_at || "")}</td>
                     <td>{o.table_no || "—"}</td>
                     <td>{o.customer_name || "—"}</td>
+                    <td>{staffName || "—"}</td>
                     <td>{STATUS_BG[o.status] || o.status}</td>
                     <td>{(o.items || []).length}</td>
                     <td className="a-right">{fmtMoney(total)}</td>

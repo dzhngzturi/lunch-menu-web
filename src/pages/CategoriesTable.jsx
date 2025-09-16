@@ -1,106 +1,252 @@
-import { useEffect, useState } from 'react';
-import { getCategories, createCategory, updateCategory, deleteCategory } from '../api';
+// src/pages/CategoriesTable.jsx
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../api";
+
+import Modal from "../components/Modal";          // твоят confirm модал (червен при danger)
+import CategoryForm from "../pages/CategoryForm"; // твоята форма
+
+// нормализатор на отговора (оставяме го както беше)
+function normalizeCatsResponse(resp) {
+  const payload = resp && typeof resp === "object" && "data" in resp ? resp.data : resp;
+
+  const meta =
+    (payload && payload.meta) ||
+    (resp && resp.meta) ||
+    { current_page: 1, last_page: 1, total: Array.isArray(payload) ? payload.length : 0 };
+
+  let items = [];
+  if (Array.isArray(payload)) items = payload;
+  else if (Array.isArray(payload?.items)) items = payload.items;
+  else if (Array.isArray(payload?.data)) items = payload.data;
+  else if (Array.isArray(payload?.results)) items = payload.results;
+
+  return { items, meta };
+}
 
 export default function CategoriesTable() {
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(null); // {id,name} или null
-  const [name, setName] = useState('');
+  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
 
-  const load = async () => {
+  // --- форма / модали ---
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState(null);          // null = нова, иначе {id,name,image,...}
+  const [form, setForm] = useState({ name: "", image: null, image_url: "" });
+
+  // --- confirm за Delete ---
+  const [toDelete, setToDelete] = useState(null);        // {id, name} или null
+  const [deleting, setDeleting] = useState(false);
+
+  const storageUrl = useMemo(
+    () => `${import.meta.env.VITE_API_URL}/storage/`,
+    []
+  );
+  const getImg = (c) => c.image_url || (c.image ? storageUrl + c.image : null);
+
+  async function load() {
     setLoading(true);
-    const res = await getCategories();
-    setRows(res.data.data ?? []);
-    setLoading(false);
-  };
+    setErr("");
+    try {
+      // ако имаш бекенд филтри/страници – подай {page, search}
+      const resp = await getCategories({ page, search });
+      const { items, meta } = normalizeCatsResponse(resp);
 
-  useEffect(() => { load(); }, []);
+      // възходящо по ID
+      items.sort((a, b) => Number(a.id) - Number(b.id));
 
-  const onSave = async () => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
-    if (editing) {
-      await updateCategory(editing.id, { name: trimmed });
-    } else {
-      await createCategory({ name: trimmed });
+      setRows(items);
+      setMeta(meta || { current_page: page, last_page: page, total: items.length });
+    } catch (e) {
+      setErr(e?.response?.data?.message || e?.message || "Грешка при зареждане.");
+    } finally {
+      setLoading(false);
     }
-    setName('');
+  }
+
+  useEffect(() => { load(); }, [page]);
+
+  // ---------- CREATE ----------
+  const openCreate = () => {
     setEditing(null);
-    await load();
+    setForm({ name: "", image: null, image_url: "" });
+    setShowForm(true);
   };
 
-  const onEdit = (row) => {
-    setEditing(row);
-    setName(row.name);
+  // ---------- EDIT ----------
+  const openEdit = (cat) => {
+    setEditing(cat);
+    setForm({ name: cat.name || "", image: null, image_url: getImg(cat) || "" });
+    setShowForm(true);
   };
 
-  const onDelete = async (row) => {
-    if (!confirm(`Изтриване на "${row.name}"?`)) return;
-    await deleteCategory(row.id);
-    await load();
+  // ---------- SAVE (create or update) ----------
+  const handleSave = async () => {
+    // валидираме
+    if (!form.name.trim()) {
+      alert("Въведи име на категория.");
+      return;
+    }
+
+    // форматираме formData (multipart)
+    const fd = new FormData();
+    fd.append("name", form.name.trim());
+    if (form.image instanceof File) {
+      fd.append("image", form.image);
+    }
+
+    try {
+      if (editing) {
+        await updateCategory(editing.id, fd);
+      } else {
+        await createCategory(fd);
+      }
+      setShowForm(false);
+      await load();
+    } catch (e) {
+      console.error(e);
+      alert(e?.response?.data?.message || e?.message || "Грешка при запис.");
+    }
+  };
+
+  // ---------- DELETE ----------
+  const confirmDelete = (cat) => {
+    setToDelete(cat);
+  };
+
+  const doDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
+    try {
+      await deleteCategory(toDelete.id);
+      setToDelete(null);
+      await load();
+    } catch (e) {
+      console.error(e);
+      alert(e?.response?.data?.message || e?.message || "Грешка при изтриване.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
-    <div className='categories-page'>
-      <h1>Категории</h1>
-
+    <div className="dishes-page">
+      {/* Toolbar */}
       <div className="toolbar">
-        <div className="form-row" style={{ alignItems: 'center' }}>
-          <input
-            placeholder="Име на категория"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && onSave()}
-          />
-          <button className="add" onClick={onSave} disabled={!name.trim()}>
-            {editing ? 'Запази' : 'Добави'}
-          </button>
-          {editing && (
-            <button
-              className="secondary"
-              onClick={() => { setEditing(null); setName(''); }}
-            >
-              Откажи
-            </button>
-          )}
-        </div>
+        <input
+          placeholder="Търси по име"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && load()}
+        />
+        <button className="btn primary" onClick={load} disabled={loading}>Търси</button>
+        <div className="spacer" />
+        <button className="btn primary" onClick={openCreate}>+ Нова категория</button>
       </div>
 
-      {loading ? (
-        <p>Зареждане...</p>
-      ) : (
-        <div className="table-wrapper">
-          <table className="table categories">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Име</th>
-                <th>Брой ястия</th>
-                <th></th>
+      {err && <div className="alert error">{err}</div>}
+      {loading && <div className="alert">Зареждане…</div>}
+
+      {/* Таблица */}
+      <div className="table-responsive">
+        <table className="admin-table dishes">
+          <thead>
+            <tr>
+              <th style={{ width: 20 }}>Снимка</th>
+              <th>Име</th>
+              <th style={{ width: 90, textAlign: "left" }}>Брой ястия</th>
+              <th className="actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((c) => (
+              <tr key={c.id}>
+                <td className="thumb-cell" data-label="Снимка">
+                  {getImg(c) ? (
+                    <img
+                      className="thumb"
+                      src={getImg(c)}
+                      alt={c.name}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  ) : (
+                    <span className="noimg">без снимка</span>
+                  )}
+                </td>
+
+                <td data-label="Име">{c.name}</td>
+
+                <td data-label="Брой" className="count-cell center">
+                  {Number(c.dishes_count ?? c.count ?? 0)}
+                </td>
+
+                <td className="actions" data-label="Действия">
+                  <button className="btn secondary" onClick={() => openEdit(c)}>Редакция</button>
+                  <button className="btn danger" onClick={() => confirmDelete(c)}>Изтрий</button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id}>
-                  <td data-label="ID">{r.id}</td>
-                  <td data-label="Име">{r.name}</td>
-                  <td data-label="Брой ястия">{r.dishes_count ?? r.dishes?.length ?? r.count ?? 0}</td>
-                  <td className="actions" data-label="Действия">
-                    <button className="secondary" onClick={() => onEdit(r)}>Редакция</button>{' '}
-                    <button className="danger" onClick={() => onDelete(r)}>Изтрий</button>
-                  </td>
-                </tr>
-              ))}
-              {!rows.length && (
-                <tr>
-                  <td colSpan={4}>Няма записи.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+
+            {rows.length === 0 && !loading && (
+              <tr><td colSpan={4} style={{ padding: 16 }}>Няма резултати</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Пагинация */}
+      <div className="pager center">
+        <button
+          className="btn primary"
+          disabled={meta.current_page <= 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          ‹ Предишна
+        </button>
+        <span className="muted">стр. {meta.current_page} от {meta.last_page}</span>
+        <button
+          className="btn primary"
+          disabled={meta.current_page >= meta.last_page}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Следваща ›
+        </button>
+      </div>
+
+      {/* --- Modal: Create / Edit (твоята форма) --- */}
+      <CategoryForm
+        open={showForm}
+        form={form}
+        setForm={setForm}
+        onSave={handleSave}
+        onCancel={() => setShowForm(false)}
+        editing={!!editing}
+        storageUrl={storageUrl}
+      />
+
+      {/* --- Modal: Delete confirm (червен) --- */}
+      <Modal
+        open={!!toDelete}
+        title="Изтриване на категория"
+        message={
+          toDelete
+            ? `Сигурни ли сте, че искате да изтриете „${toDelete.name}“?`
+            : ""
+        }
+        confirmText={deleting ? "Изтриване..." : "Изтрий"}
+        cancelText="Отказ"
+        danger
+        onConfirm={doDelete}
+        onCancel={() => setToDelete(null)}
+      />
     </div>
   );
 }

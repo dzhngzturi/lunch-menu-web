@@ -9,7 +9,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   flex-direction:column;
   background:linear-gradient(180deg,#f8fafc 0%,#fff 30%);
 }
-.container{max-width:1100px;margin:0 auto;padding:0 16px;box-sizing:border-box}
+.container{max-width:1100px;margin:0 auto;padding:0 16px;box-sizing:border-box;}
 
 /* ===== Header layout ===== */
 .header-row {
@@ -20,12 +20,20 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 }
 
 .brand {
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;            /* разстояние между лого и текст */
+  font-size: 1.5rem;
   font-weight: 700;
   text-decoration: none;
-  color: #111;
-  flex-shrink: 0; /* логото да стои стабилно вляво */
+  color: inherit;
 }
+
+.brand-logo {
+  height: 40px;        /* адаптирай според височината на header-a */
+  width: auto;
+}
+
 
 .nav {
   display: flex;
@@ -36,15 +44,23 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 }
 
 .nav a {
-  color: #0f172a;
+  color: #000;
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  transition: 0.15s ease;
+  padding: 0 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
-.nav a:hover { background: #f1f5f9; }
-.nav a.active { background: #e2e8f0; }
 
+.nav a:hover {
+  color: #0b3d91; /* син при hover */
+}
+
+.nav a.active {
+  color: #0b3d91;     /* само текстът става син */
+  font-weight: 600;   /* малко по-дебел */
+  border: none;
+  background: none;
+}
 
 .nav-spacer{ flex:1; }.header-row {
   display: flex;
@@ -52,6 +68,36 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   justify-content: space-between; /* раздалечава логото и навигацията */
   gap: 16px;
 }
+
+/* контейнерът на навигацията */
+.nav.nav-center {
+  display: flex;
+  gap: 32px;               /* разстояние между линковете */
+  align-items: center;
+}
+
+/* всички линкове */
+.nav.nav-center a {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;  /* главни букви */
+  color: #111;
+  padding: 24px 0;          /* прави header-а по-висок */
+  transition: color 0.2s ease;
+}
+
+/* hover ефект */
+.nav.nav-center a:hover {
+  color: #0077b6;           /* син при hover */
+}
+
+/* active NavLink (React Router подава .active) */
+.nav.nav-center a.active {
+  color: #0077b6;
+  border-bottom: 2px solid #0077b6;
+}
+
 
 .brand {
   font-size: 24px;
@@ -61,23 +107,6 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   flex-shrink: 0; /* логото да стои стабилно вляво */
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;   /* центрираме линковете вътре */
-  flex: 1;                   /* взема останалото място */
-}
-
-.nav a {
-  color: #0f172a;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  transition: 0.15s ease;
-}
-.nav a:hover { background: #f1f5f9; }
-.nav a.active { background: #e2e8f0; }
 
 .site-main{flex:1;padding:24px 0}
 .site-footer{border-top:1px solid #e5e7eb;background:#f8fafc;color:#334155}
@@ -88,8 +117,8 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 .btn{display:inline-block;padding:10px 14px;border-radius:10px;text-decoration:none;border:1px solid transparent}
 .btn-primary{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
 .btn-primary:hover{filter:brightness(.95)}
-.btn-outline{background:#fff;color:#0f172a;border-color:#e2e8f0}
-.btn-outline:hover{background:#f1f5f9}
+.btn-outline{background:#0ea5e9;color:#fff;}
+.btn-outline:hover{background:#f1f5f9; color: #000; border-color: #0b0b0b;}
 
 /* ===== HERO (една снимка) ===== */
 .hero{
@@ -100,7 +129,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 
 /* Home банер – собствена снимка и височина */
 .hero.home{
-  background-image: url("/banners/home.jpg");
+  background-image: url("/banners/banner.png");
   height: min(68vh, 620px);
 }
 
@@ -455,10 +484,15 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   margin-top: 20px !important;
 }
 
-/* 3) Full-bleed елeменти да вземат същото разстояние отгоре */
+/* 3) Full-bleed елeменти да вземат същото разстояние отгоре 
 .testimonials.full-bleed,
 .carousel.full-bleed {
-  margin-top: 40px !important;  /* за всеки случай, дори да не са директен sibling */
+  margin-top: 40px !important;  /* за всеки случай, дори да не са директен sibling 
+}*/
+
+.hero-home-space {
+  background-color: #ddd; /* тъмносин */
+  height: 80px;              /* колко висока да е лентата */
 }
 
 /* помощни класове при нужда */
@@ -615,14 +649,6 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 .muted{ color: #64748b; text-decoration: none; font-size: 14px; }
 .muted:hover{ color: #334155; }
 
-/* ако вече имаш .btn/.btn-primary – това е резервно, иначе се игнорира */
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer; border-radius:12px; padding:10px 14px; font-weight:600; }
-.btn-lg{ width:100%; padding:12px 16px; font-size:16px; }
-.btn-primary{ background:#2563eb; color:#fff; }
-.btn-primary:hover{ filter:brightness(.96); }
-.btn-primary:disabled{ opacity:.7; cursor:not-allowed; }
-
-
 
 /* Auth buttons */
 .btn-auth{
@@ -644,7 +670,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 
 /* ===== Burger (mobile) ===== */
 /* header да е най-отгоре */
-.site-header{ position: sticky; top:0; z-index:1000; background:#f2f2f2; }
+.site-header{ position: sticky; top:0; z-index:1000; background:#f2f2f2; height: 100px; }
 
 /* drawer – под хедъра, НЕ го покрива; покрива останалото */
 .mobile-drawer{
@@ -719,10 +745,11 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   height:auto;
   object-fit:contain;
   /* ако логото е тъмно – обърни цветовете: */
-  /* filter:brightness(0) invert(1); */
 }
+
 .footer-copy{
   margin-top:12px;
+  align-content: center;
   font-size:.9rem;
   color:#aaa;
 }
@@ -796,7 +823,6 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   background: var(--brand-navy);
   color: var(--brand-navy-contrast);
   border-top: none;    
-  margin-top: 40px;
 }
 
 /* Линкове и икони във футъра – светли */
@@ -863,7 +889,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   width: 100%;
   background: #171a1f;
   color: #fff;
-  padding: 60px 20px;
+  padding: 60px 40px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 30px;
@@ -871,7 +897,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 }
 .about-highlights .highlight h3 {
   margin: 10px 0;
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -927,7 +953,7 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
   text-transform:uppercase; letter-spacing:.18em; font-size:.95rem;
   margin:6px 0 8px;
 }
-.highlight p{ opacity:.86; }
+.highlight p{ opacity:.86; font-size: 14; text-shadow: 0 2px 6px rgba(0,0,0,.35);}
 
 /* CTA банер */
 .about-cta{
@@ -1000,3 +1026,671 @@ body { overflow-x: hidden; } /* заради .full-bleed банера */
 .toast-error{   border-color:#ef4444; }
 .toast-info{    border-color:#3b82f6; }
 
+.notfound-wrapper {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 140px); /* спрямо твоя layout */
+  padding: 24px;
+}
+.notfound-card {
+  max-width: 720px;
+  width: 100%;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  padding: 28px 24px;
+  text-align: center;
+}
+.notfound-card h1 { margin: 0 0 8px; }
+.notfound-card .muted { color: #6b7280; margin-bottom: 18px; display: block; }
+.notfound-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+.nf-wrapper {
+  min-height: 80vh;          /* да заеме почти целия екран */
+  display: flex;
+  align-items: center;       /* вертикално центриране */
+  justify-content: center;   /* хоризонтално центриране */
+}
+
+.nf-card {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 500px;
+}
+
+.nf-card h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.nf-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.nf-btn:hover {
+  background: #1d4ed8;
+}
+
+.menu-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.menu-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.25s;
+}
+.menu-card:hover {
+  background: #f3f4f6;
+}
+.menu-card.active {
+  border-color: #2563eb;
+  background: #eef2ff;
+}
+
+
+.cards-section {
+  background: linear-gradient(135deg, #fefefe, #f3f9f7);
+  background-image: url('/assets/pattern-dots.svg');
+  background-repeat: repeat;
+  background-size: 300px;
+}
+
+
+.menu-table-wrapper { overflow-x: auto; }
+.menu-table { width: 100%; border-collapse: collapse; }
+.menu-table th, .menu-table td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+.menu-table thead th { background: #f8fafc; font-weight: 700; }
+.a-right { text-align: right; }
+
+@media (max-width: 640px){
+  .menu-table-wrapper{
+    overflow-x: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .menu-table-wrapper::-webkit-scrollbar{ display:none; }
+}
+
+
+/*  DishDetails */
+.dish-grid{display:grid;grid-template-columns:minmax(280px,520px) 1fr;gap:28px;align-items:start}
+.dish-media img{width:100%;height:100%;object-fit:cover;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.media-placeholder{height:360px;border-radius:18px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#9ca3af}
+.dish-title{font-size:clamp(22px,3vw,22px);margin:0 0 6px}
+.dish-price{font-size:20px;font-weight:700;margin:12px 0 16px}
+.dish-desc{opacity:.9;line-height:1.6}
+.dish-actions{margin-top:18px;display:flex;gap:12px}
+@media (max-width:900px){.dish-grid{grid-template-columns:1fr}}
+/* skeleton */
+.skeleton.dish-skel{height:420px;border-radius:18px;background:linear-gradient(90deg,#f4f4f4,#e9e9e9,#f4f4f4);background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ---------- Dish details ---------- */
+.crumbs {
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+.crumbs a {
+  color: var(--primary);
+  text-decoration: none;
+}
+.crumbs a:hover { text-decoration: underline; }
+
+/* layout */
+.dish-view {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* photo */
+.dish-photo {
+  aspect-ratio: 4 / 3;
+  background: #f1f5f9;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(2, 8, 23, .06);
+}
+.dish-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.no-photo {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9aa4b2;
+  font-size: .95rem;
+}
+
+/* text */
+.dish-info { padding: 8px 0; }
+.dish-h1   { font-size: 2rem; margin: 0 0 6px; line-height: 1.2; }
+.dish-price{
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 16px 0 10px;
+}
+.dish-desc-lg {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #334155;
+}
+.dish-actions .btn { margin-top: 10px; }
+
+/* skeleton while loading (по желание) */
+.dish-skel {
+  height: 320px;
+  border-radius: 16px;
+  background: linear-gradient(90deg,#f3f4f6 25%,#e5e7eb 37%,#f3f4f6 63%);
+  background-size: 400% 100%;
+  animation: dishShimmer 1.4s ease infinite;
+}
+@keyframes dishShimmer {
+  0% { background-position: 100% 0 }
+  100% { background-position: 0 0 }
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .dish-view { grid-template-columns: 1fr; gap: 16px; }
+  .dish-h1   { font-size: 1.6rem; }
+}
+
+/* линковете-карти в менюто да не са “сини” */
+a.dish-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+a.dish-card .dish-title,
+a.dish-card .dish-desc,
+a.dish-card .price {
+  color: inherit;
+  text-decoration: none;
+}
+a.dish-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(2,8,23,.08);
+}
+
+
+.thumb-cell { width: 72px; }
+.thumb {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  display: block;
+}
+.noimg {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  white-space: nowrap;
+}
+
+
+/* ГРИД С КАТЕГОРИИТЕ */
+.cats-grid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:22px 28px;         /* вертикален / хоризонтален отстъп */
+  align-items:start;
+}
+
+/* ЕДНА КАТЕГОРИЯ = ХОРИЗОНТАЛНА КАРТА (картинка + заглавие) */
+.cat-card{
+  display:grid;
+  grid-template-columns:140px 1fr;  /* лява кутия за снимката */
+  grid-auto-rows:100px;             /* височина на реда */
+  background:#fff;
+  border:none;                      /* рамките са върху вътрешните кутии */
+  padding:0;
+  cursor:pointer;
+}
+
+.cat-card:focus-visible{
+  outline:2px solid #2563eb;
+  outline-offset:2px;
+}
+
+/* ЛЯВА кутия (само рамка около снимката) */
+.cat-thumb-wrap{
+  width:140px;
+  height:100px;
+  border:1px solid #dedede;
+  overflow:hidden;
+  background:#fafafa;
+}
+
+.cat-thumb{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ДЯСНА кутия с надписа (като на снимката) */
+.cat-title-box{
+  border:1px solid #dedede;
+  height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 10px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+  background:#fff;
+}
+
+.cat-card:hover .cat-title-box{
+  border-color:#c7c7c7;
+  box-shadow:0 1px 0 rgba(0,0,0,.03);
+}
+
+/* ТЕКСТ ВЪТРЕ – главни букви, плътно */
+.cat-title{
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  text-align:center;
+  color:#111827;
+  line-height:1.2;
+}
+
+/* Ако няма снимка – сив плейсхолдър */
+.cat-thumb.noimg{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#bbb;
+  font-size:22px;
+}
+
+/* РЕСПОНСИВНОСТ */
+@media (max-width:1200px){
+  .cats-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width:900px){
+  .cats-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width:560px){
+  .cat-card{
+    grid-template-columns:120px 1fr;
+    grid-auto-rows:90px;
+  }
+  .cat-thumb-wrap{ width:120px; height:90px; }
+  .cat-title-box{ height:90px; }
+}
+
+/* Показвай/скривай контроли по размер (може да ги имаш вече) */
+.only-mobile { display: none; }
+.only-desktop { display: block; }
+
+@media (max-width: 768px) {
+  .only-mobile { display: block; }
+  .only-desktop { display: none; }
+}
+
+/* CatSlider */
+.cat-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cat-slider-track {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 6px 2px;
+}
+.cat-slider-track::-webkit-scrollbar {
+  height: 0; /* скриваме хор. скролбар на мобилно */
+}
+
+.cat-pill {
+  white-space: nowrap;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+.cat-pill.active {
+  border-color: #2563eb;
+  background: #e0e7ff;
+  color: #111827;
+  font-weight: 600;
+}
+
+.cat-slider-nav {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  border-radius: 999px;
+  font-size: 18px;
+}
+.cat-slider-nav:disabled { opacity: .4; }
+
+/* ============== RESERVATION BANNER (стабилна, симетрична версия) ============== */
+
+/* ЧЕРВЕНАТА ЛЕНТА – опира до краищата */
+.rb-strip{
+  background:#c92a2a;           /* основно червено (смени по бранд) */
+  padding: clamp(14px, 2.8vw, 22px) 0;   /* въздух отгоре/отдолу */
+}
+
+/* Центриране и ограничена ширина вътре */
+.rb-container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 3.5vw, 28px);
+}
+
+/* ВЪТРЕШНИЯТ ЗАОБЛЕН БЛОК – малко по-тъмен за визуална дълбочина */
+.rb-inner{
+  background: #b82424;                 /* по-тъмен нюанс от лентата */
+  color: #fff;
+  border-radius: 20px;
+  padding: clamp(16px, 3.2vw, 26px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(12px, 2.4vw, 20px);
+
+  box-shadow: 0 10px 26px rgba(0,0,0,.14);
+}
+
+/* Лява част: заглавие + подзаглавие */
+.rb-title{
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  letter-spacing: .2px;
+  line-height: 1.15;
+  font-size: clamp(22px, 3.4vw, 34px);
+  animation: rb-fade .45s ease both;
+}
+
+.rb-sub{
+  margin: 0;
+  opacity: .95;
+  font-size: clamp(16px, 1.7vw, 18px);
+  animation: rb-fade .55s ease both;
+}
+
+/* Дясна част: бутони */
+.rb-actions{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;            /* никога не се наслагват – слизат отдолу */
+}
+
+/* Унифициран бутон */
+.rb-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  text-decoration:none;
+  transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.14);
+  white-space: nowrap;
+}
+
+/* Светъл бутон (Email) */
+.rb-btn--light{
+  background:#fff;
+  color:#111827;
+}
+
+/* „Ghost“ бутон (Телефон) */
+.rb-btn--ghost{
+  background: transparent;
+  color:#fff;
+  border: 1px solid rgba(255,255,255,.6);
+}
+
+/* Hover */
+.rb-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.18);
+}
+
+/* ---- Респонсиви ---- */
+
+/* На < 900px – блоков layout; нищо не „криви“ */
+@media (max-width: 900px){
+  .rb-inner{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .rb-actions{
+    justify-content: flex-start;
+  }
+}
+
+/* Плавна, дискретна поява – не размества layout-а */
+@keyframes rb-fade{
+  from{ opacity:0; transform: translateY(8px); }
+  to  { opacity:1; transform: translateY(0);  }
+}
+
+/* Достъпност: без анимации при предпочитание */
+@media (prefers-reduced-motion: reduce){
+  .rb-title,.rb-sub{ animation: none; }
+  .rb-btn{ transition: none; }
+}
+
+
+/* ===== ПОЯВА при скрол (не мести лейаута) ===== */
+.rb-inner{
+  /* начално състояние преди наблюдателя */
+  opacity: 0;
+  transform: translateY(12px) scale(.985);
+}
+.rb-inner.in-view{
+  animation: rb-pop .55s cubic-bezier(.18,.9,.22,1.05) forwards;
+}
+
+@keyframes rb-pop{
+  0%   { opacity:0; transform: translateY(12px) scale(.985); }
+  60%  { opacity:1; transform: translateY(0)    scale(1.005); }
+  100% { opacity:1; transform: translateY(0)    scale(1); }
+}
+
+/* Подчертаване на заглавието – плавно изплува */
+.rb-title{
+  position: relative;
+}
+.rb-title::after{
+  content:"";
+  position:absolute; left:0; bottom:-8px;
+  height:3px; width:0;
+  border-radius:3px;
+  background: rgba(255,255,255,.85);
+  transition: width .6s ease .15s;
+}
+.rb-inner.in-view .rb-title::after{ width: 92px; }
+
+/* ===== АКЦЕНТ върху бутоните ===== */
+
+/* Белият бутон – sheen + мек пулс */
+.rb-btn--light{
+  position: relative;
+  overflow: hidden;
+  animation: rb-pulse 3.2s ease-in-out infinite;
+}
+@keyframes rb-pulse{
+  0%,100% { box-shadow: 0 6px 16px rgba(0,0,0,.14); }
+  50%     { box-shadow: 0 10px 24px rgba(0,0,0,.20); }
+}
+/* „лъскав“ проблясък, който минава през бутона */
+.rb-btn--light::after{
+  content:"";
+  position:absolute; inset:0;
+  transform: translateX(-120%);
+  background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,.55) 45%, transparent 65%);
+  filter: blur(1px);
+  animation: rb-sheen 5.2s linear infinite;
+}
+@keyframes rb-sheen{
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* Иконките – дискретно „дишане“ (много леко) */
+.rb-btn svg{
+  transform-origin: 50% 50%;
+  animation: rb-icon 2.8s ease-in-out infinite;
+}
+@keyframes rb-icon{
+  0%,100% { transform: scale(1);   opacity: .95; }
+  50%     { transform: scale(1.06); opacity: 1;   }
+}
+
+/* При hover – вертикален micro-lift */
+.rb-btn:hover{
+  transform: translateY(-2px);
+}
+
+/* Достъпност: без анимации за хора с намалено движение */
+@media (prefers-reduced-motion: reduce){
+  .rb-inner,.rb-inner.in-view,.rb-title::after,
+  .rb-btn--light,.rb-btn--light::after,.rb-btn svg,
+  .rb-btn:hover{
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  .rb-inner{ opacity:1 !important; }
+  .rb-title::after{ width:92px; } /* статично подчертаване */
+}
+
+/* базов слой; съдържанието стои нормално */
+.rb-strip{
+  position: relative;
+  z-index: 1;
+}
+
+/* контейнерът може да си запази нормалния падинг */
+.rb-container{
+  padding: clamp(16px, 3vw, 28px);
+}
+
+/* вътрешната червена карта (както при теб) */
+.rb-inner{
+  position: relative;
+  background: #0f1926;
+  color: #fff;
+  border-radius: 18px;
+  padding: clamp(20px, 4vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 24px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.12);
+}
+
+/* ---- НОВО: edge-to-edge фон чрез pseudo-element ---- */
+.rb-strip--bleed::before{
+  content: "";
+  position: absolute;
+  /* колко да “вдигнем” банера (стойност идва от --rb-raise) */
+  top: calc(-1 * var(--rb-raise, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  /* височината да покрие банера + повдигането */
+  height: calc(100% + var(--rb-raise, 0px));
+  background: #0f1926;            /* същия фон като картата */
+  z-index: -1;                     /* зад съдържанието */
+  /* ако искаш заобляне на самия full-bleed фон: */
+  /* border-radius: 18px;  */
+  /* ако искаш “твърдо” да опира до краищата – остави 0 */
+  border-radius: 0;
+  box-shadow: inset 0 18px 30px rgba(0,0,0,.18); /* лека дълбочина */
+}
+
+/* за да не се “реже” шейна/подсветка по краищата */
+.rb-strip--bleed { overflow: visible; }
+
+/* бутоните – както си ги имаш */
+.rb-actions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* responsive дреболии */
+@media (max-width: 768px){
+  .rb-inner{ flex-direction: column; align-items: flex-start; }
+}
+
+/* цвят на страницата (ако не е чисто бял, смени го) */
+:root{ --page-bg: #fff; }
+
+/* добавяме изрязване отдолу само на мобилно */
+@media (max-width: 640px){
+  .rb-strip--bleed{
+    overflow: visible;
+  }
+
+  .rb-strip--bleed::after{
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -1px;
+    height: 26px;                          /* колко „дълбок“ е откусът */
+    background: var(--page-bg);            /* да се слее със страницата */
+    /* маска тип усмивка – изрязва дъга */
+    -webkit-mask: radial-gradient(120% 28px at 50% -2px, #000 98%, transparent 100%);
+            mask: radial-gradient(120% 28px at 50% -2px, #000 98%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ако искаш и отгоре лека дъга – разкоментирай: */
+  /*
+  .rb-strip--bleed .rb-top-cut{
+    content: "";
+    position: absolute; left: 0; right: 0; top: -1px;
+    height: 22px;
+    background: var(--page-bg);
+    -webkit-mask: radial-gradient(120% 26px at 50% 100%, #000 98%, transparent 100%);
+            mask: radial-gradient(120% 26px at 50% 100%, #000 98%, transparent 100%);
+    pointer-events: none;
+  }
+  */
+}

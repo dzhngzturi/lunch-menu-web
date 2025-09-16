@@ -75,6 +75,14 @@ export default function AdminLayout() {
             {/* <NavLink to="/admin/orders/report">Отчет</NavLink> */}
           </nav>
         )}
+         {/* Footer */}
+          <footer className="p-3 text-xs text-gray-400 border-t border-slate-700">
+            <p> 2025 © Bistro Dashboard 
+              <br></br>
+              <span>Designed by Dzhengiz Turhan</span>
+            </p> 
+          </footer>
+      
       </aside>
 
       <div className={`admin-overlay ${open ? "show" : ""}`} onClick={() => setOpen(false)} />
