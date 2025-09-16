@@ -6,9 +6,6 @@ const FALLBACK = 'http://127.0.0.1:8000/api';
 const ENV_BASE = import.meta.env.VITE_API_BASE_URL;
 export const baseURL = (ENV_BASE && ENV_BASE.trim()) ? ENV_BASE.trim() : FALLBACK;
 
-console.log("[API] VITE_API_BASE_URL =", ENV_BASE);
-console.log("[API] using baseURL     =", baseURL);
-
 
 // <-- ДОБАВЕНО: origin без /api
 export const API_ORIGIN = baseURL.replace(/\/api\/?$/, '');

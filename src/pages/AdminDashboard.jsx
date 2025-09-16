@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useMemo } from "react";
 
 export default function AdminDashboard() {
   let user = null;
-  try { user = JSON.parse(localStorage.getItem("user")); } catch {}
+  try { user = JSON.parse(localStorage.getItem("user")); } catch { }
 
   const isAdmin = user?.role === "admin";
 
@@ -47,8 +46,7 @@ export default function AdminDashboard() {
         </>
       ) : (
         <>
-          {/* Staff dashboard тук */}
-                    <div className="card">
+          <div className="card">
             <h2>Нова поръчка</h2>
             <p>Бързо създаване на поръчка.</p>
             <NavLink to="/admin/orders/create" className="btn primary">Създай</NavLink>

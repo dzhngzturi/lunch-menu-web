@@ -1,8 +1,7 @@
-// src/pages/CreateOrder.jsx
 import { useEffect, useMemo, useState } from "react";
 import Select from "react-select";
-import { getDishes } from "../api";          // вече го имаш: getDishes(params)
-import { api } from "../api";                // за POST /orders
+import { getDishes } from "../api";          
+import { api } from "../api";           
 import { useNavigate } from "react-router-dom";
 
 const stationOptions = [
@@ -28,27 +27,22 @@ const selectStyles = {
 export default function CreateOrder() {
   const nav = useNavigate();
 
-  // header полета
   const [tableNo, setTableNo] = useState("");
   const [customer, setCustomer] = useState("");
   const [notes, setNotes] = useState("");
 
-  // избор на станция → филтрира ястията
   const [station, setStation] = useState("kitchen");
 
-  // ястия (заредени по станция)
   const [dishes, setDishes] = useState([]);
   const dishOptions = useMemo(
     () => dishes.map(d => ({ value: d.id, label: `${d.name} — ${Number(d.price).toFixed(2)} лв.` })),
     [dishes]
   );
 
-  // текущ ред за добавяне
   const [pickedDish, setPickedDish] = useState(null);
   const [qty, setQty] = useState(1);
   const [itemNote, setItemNote] = useState("");
 
-  // кошница
   const [items, setItems] = useState([]);
   const total = useMemo(
     () => items.reduce((sum, it) => sum + it.price * it.qty, 0),
@@ -58,7 +52,6 @@ export default function CreateOrder() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
-  // зареди ястия при смяна на станция
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -68,7 +61,6 @@ export default function CreateOrder() {
       } catch (e) {
         if (!cancelled) setDishes([]);
       }
-      // reset на избора при смяна
       setPickedDish(null);
       setQty(1);
       setItemNote("");
@@ -92,11 +84,10 @@ export default function CreateOrder() {
         price: Number(dish.price || 0),
         qty: Number(qty),
         note: itemNote?.trim() || "",
-        station: dish.station, // за инфо
+        station: dish.station, 
       }
     ]);
 
-    // изчистване на реда
     setPickedDish(null);
     setQty(1);
     setItemNote("");
@@ -122,7 +113,6 @@ export default function CreateOrder() {
         }))
       };
       const { data } = await api.post("/orders", payload);
-      // готово → към таблото за съответната станция
       nav(`/admin/orders/${station}`, { replace: true, state: { createdOrder: data?.data?.id } });
     } catch (e) {
       const msg = e?.response?.data?.message || "Неуспешно създаване на поръчка.";
@@ -139,7 +129,6 @@ export default function CreateOrder() {
       </div>
 
       <div className="co-row">
-        {/* 1) Станция */}
         <div className="co-col">
           <label className="co-label">Станция</label>
           <div className="seg">
@@ -156,7 +145,6 @@ export default function CreateOrder() {
           </div>
         </div>
 
-        {/* 2) Маса и Клиент */}
         <div className="co-col">
           <label className="co-label">Маса</label>
           <input className="co-input" value={tableNo} onChange={e => setTableNo(e.target.value)} placeholder="напр. 12" />
@@ -167,7 +155,6 @@ export default function CreateOrder() {
         </div>
       </div>
 
-      {/* 3) Избор на ястие по станция */}
       <div className="co-row">
         <div className="co-col grow">
           <label className="co-label">Ястие ({station === "kitchen" ? "Кухня" : "Бар"})</label>
@@ -204,25 +191,24 @@ export default function CreateOrder() {
         </div>
       </div>
 
-      {/* 4) Кошница / избрани редове */}
       <div className="co-basket">
         {items.length === 0 ? (
           <div className="empty">Няма добавени редове.</div>
         ) : (
            <table className="co-table">
             <colgroup>
-              <col style={{ width: "52%" }} />         {/* Ястие */}
-              <col style={{ width: "10%" }} />         {/* Кол. */}
-              <col style={{ width: "18%" }} />         {/* Бележка */}
-              <col style={{ width: "18%" }} />         {/* Цена */}
-              <col style={{ width: "40px" }} />        {/* Х бутон (фиксирана) */}
+              <col style={{ width: "52%" }} />       
+              <col style={{ width: "10%" }} />     
+              <col style={{ width: "18%" }} />         
+              <col style={{ width: "18%" }} />        
+              <col style={{ width: "40px" }} />     
             </colgroup>
             <thead>
               <tr>
                 <th>Ястие</th>
-                <th>Кол.</th>           {/* премахнах a-right */}
+                <th>Кол.</th>          
                 <th>Бележка</th>
-                <th>Цена</th>          {/* премахнах a-right */}
+                <th>Цена</th>        
                 <th></th>
               </tr>
             </thead>
@@ -230,9 +216,9 @@ export default function CreateOrder() {
               {items.map((it, i) => (
                 <tr key={i}>
                   <td>{it.name}</td>
-                  <td>{it.qty}</td>                 {/* без a-right */}
+                  <td>{it.qty}</td>                
                   <td className="muted">{it.note || "—"}</td>
-                  <td>{(it.price * it.qty).toFixed(2)} лв.</td>  {/* без a-right */}
+                  <td>{(it.price * it.qty).toFixed(2)} лв.</td>  
                   <td className="a-right">
                     <button className="btn btn-small" onClick={() => removeItem(i)}>✕</button>
                   </td>
@@ -242,7 +228,7 @@ export default function CreateOrder() {
             <tfoot>
               <tr>
                 <td colSpan={3} className="a-right strong">Общо:</td>
-                <td className="strong">{total.toFixed(2)} лв.</td> {/* само strong */}
+                <td className="strong">{total.toFixed(2)} лв.</td>
                 <td></td>
               </tr>
             </tfoot>
@@ -250,7 +236,6 @@ export default function CreateOrder() {
         )}
       </div>
 
-      {/* 5) Бележка за поръчката */}
       <div className="co-row">
         <div className="co-col grow">
           <label className="co-label">Бележка към поръчката</label>
@@ -266,7 +251,6 @@ export default function CreateOrder() {
 
       {err && <div className="alert error" style={{ marginTop: 8 }}>{err}</div>}
 
-      {/* 6) Действие */}
       <div className="co-actions">
         <button className="btn" onClick={() => nav(-1)}>Отказ</button>
         <button

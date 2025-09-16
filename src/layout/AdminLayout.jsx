@@ -35,7 +35,6 @@ export default function AdminLayout() {
           <i className={`fa-solid ${open ? "fa-xmark" : "fa-bars"}`} />
         </button>
 
-        {/* 👇 заменяме статичния текст с динамичен NavLink */}
         <NavLink to="/admin" className="admin-brand">
           {isAdmin ? "Admin Dashboard" : "Staff Dashboard"}
         </NavLink>
@@ -50,7 +49,6 @@ export default function AdminLayout() {
         </div>
       </header>
       <aside className={`admin-sidebar ${open ? "open" : ""}`}>
-        {/* 👇 Менюто зависи от ролята */}
         {isAdmin ? (
           <nav className="admin-menu">
             <NavLink to="/admin" end>Dashboard</NavLink>
@@ -66,13 +64,10 @@ export default function AdminLayout() {
           </nav>
         ) : (
           <nav className="admin-menu">
-            {/* само поръчките за staff */}
              <NavLink to="/admin" end>Dashboard</NavLink>
             <NavLink to="/admin/orders/create">Нова поръчка</NavLink>
             <NavLink to="/admin/orders/kitchen">Поръчки (Кухня)</NavLink>
             <NavLink to="/admin/orders/bar">Поръчки (Бар)</NavLink>
-            {/* ако искаш да виждат и отчета, махни този коментар: */}
-            {/* <NavLink to="/admin/orders/report">Отчет</NavLink> */}
           </nav>
         )}
          {/* Footer */}

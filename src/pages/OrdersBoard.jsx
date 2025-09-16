@@ -1,4 +1,3 @@
-// src/pages/OrdersBoard.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import Select from "react-select";
 import {
@@ -28,7 +27,6 @@ const STATUS_LABEL_BG = {
   cancel: "Отказана",
 };
 
-// новите най-отгоре: created_at (ако има) или по id
 const sortItemsDesc = (items = []) =>
   [...items].sort((a, b) => {
     if (a?.created_at && b?.created_at) {
@@ -38,7 +36,6 @@ const sortItemsDesc = (items = []) =>
   });
 
 
-/* ---------- бутони за статус на ЯСТИЕ ---------- */
 function ItemStatusButtons({ value, onPick, disabled = false }) {
   return (
     <div className="item-status-buttons">
@@ -71,7 +68,6 @@ function ItemStatusButtons({ value, onPick, disabled = false }) {
   );
 }
 
-/* ---------- бутони за статус на ПОРЪЧКА ---------- */
 function OrderStatusPicker({ value, onChange, disabled = false }) {
   const options = ["new", "done", "cancel"];
   return (
@@ -121,7 +117,6 @@ export default function OrdersBoard({ station }) {
   const deltaTimerRef = useRef(null);
   const lastSyncRef   = useRef(null);
 
-  // 🔔 звук (файл: /public/bell-notification.mp3)
   const soundRef = useRef(null);
   const soundArmedRef = useRef(false);
 
@@ -131,7 +126,6 @@ export default function OrdersBoard({ station }) {
     audio.volume = 1.0;
     soundRef.current = audio;
 
-    // auto-unlock при първото взаимодействие/фокус
     const unlock = async () => {
       if (!soundRef.current || soundArmedRef.current) return;
       try {
@@ -157,7 +151,6 @@ export default function OrdersBoard({ station }) {
     };
   }, []);
 
-  // списък маси за филтър
   const tables = useMemo(() => {
     const set = new Set();
     orders.forEach((o) => o.table_no && set.add(String(o.table_no)));
@@ -191,7 +184,6 @@ export default function OrdersBoard({ station }) {
     menu: (base) => ({ ...base, zIndex: 25 }),
   };
 
-  // --------- зареждане ---------
   const fetchOrders = async ({ onlyDelta = false } = {}) => {
     const params = {
       station,
@@ -202,7 +194,6 @@ export default function OrdersBoard({ station }) {
       ...(onlyDelta && lastSyncRef.current ? { updated_after: lastSyncRef.current } : {}),
     };
 
-    // ---- DELTA ----
     if (onlyDelta) {
       if (fullCtrlRef.current) return;
       if (deltaCtrlRef.current) return;
@@ -226,7 +217,7 @@ export default function OrdersBoard({ station }) {
           const byId = new Map(prev.map(o => [o.id, o]));
           let isNew = false;
           for (const o of chunk) {
-            if (!byId.has(o.id)) isNew = true; // има нова поръчка
+            if (!byId.has(o.id)) isNew = true; 
             byId.set(o.id, o);
           }
           if (isNew && soundArmedRef.current && soundRef.current) {
@@ -247,7 +238,6 @@ export default function OrdersBoard({ station }) {
       return;
     }
 
-    // ---- FULL ----
     if (fullCtrlRef.current) fullCtrlRef.current.abort();
     const ctrl = new AbortController();
     fullCtrlRef.current = ctrl;
@@ -292,7 +282,6 @@ export default function OrdersBoard({ station }) {
     };
   }, [station]);
 
-  // -------- помощни --------
   const showMsg = (title, message) => setMsg({ title, message });
   const closeMsg = () => setMsg(null);
 
@@ -354,7 +343,6 @@ export default function OrdersBoard({ station }) {
 
   return (
     <div className="card">
-      {/* Toolbar / Филтри */}
       <div className="toolbar">
         <div className="filters">
           <label className="label-inline strong" htmlFor="status-filter">Статус:</label>

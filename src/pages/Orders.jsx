@@ -1,4 +1,3 @@
-// src/pages/Orders.jsx
 import { NavLink, Outlet } from "react-router-dom";
 
 export default function Orders() {
@@ -6,7 +5,6 @@ export default function Orders() {
     <div className="container" style={{ padding: 24 }}>
       <h1 style={{ marginBottom: 16 }}>Поръчки</h1>
 
-      {/* Табове за станции */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <NavLink
           to="kitchen"
@@ -22,7 +20,6 @@ export default function Orders() {
         </NavLink>
       </div>
 
-      {/* Тук се визуализира дъщерния екран (OrdersBoard) */}
       <Outlet />
     </div>
   );

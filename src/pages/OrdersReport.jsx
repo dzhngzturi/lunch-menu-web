@@ -1,4 +1,3 @@
-// src/pages/OrdersReport.jsx
 import { useMemo, useState } from "react";
 import Select from "react-select";
 import { listOrdersAll } from "../api";
@@ -30,7 +29,6 @@ const selectStyles = {
   menu: (b) => ({ ...b, zIndex: 25 }),
 };
 
-// преводи на статусите
 const STATUS_BG = {
   new: "Нова",
   in_progress: "В процес",
@@ -44,12 +42,11 @@ function fmtMoney(v) {
   return (Number(v) || 0).toFixed(2) + " лв.";
 }
 function parseDate(s) {
-  // s може да е "2025-03-20" или пълно ISO от бекенда
   return new Date(s);
 }
 
 export default function OrdersReport() {
-  const [dateFrom, setDateFrom]     = useState(""); // "YYYY-MM-DD"
+  const [dateFrom, setDateFrom]     = useState(""); 
   const [dateTo, setDateTo]         = useState("");
   const [station, setStation]       = useState(STATIONS[0]);
   const [status, setStatus]         = useState(STATUSES[0]);
@@ -64,21 +61,17 @@ export default function OrdersReport() {
     setError("");
     setOrders([]);
     try {
-      // 1) Взимаме всички поръчки по филтрите, които бекендът разпознава
       const baseFilters = {
         ...(station.value ? { station: station.value } : {}),
         ...(status.value   ? { status: status.value }   : {}),
       };
       const all = await listOrdersAll(baseFilters);
 
-      // 2) Допълнителни филтри от клиента (дата, маса)
       const from = dateFrom ? parseDate(dateFrom + "T00:00:00") : null;
       const to   = dateTo   ? parseDate(dateTo   + "T23:59:59") : null;
 
       const filtered = all.filter(o => {
-        // по маса
         if (tableNo && String(o.table_no || "").trim() !== String(tableNo).trim()) return false;
-        // по дата (created_at)
         if (from || to) {
           const created = parseDate(o.created_at || o.updated_at || o.date || 0);
           if (from && created < from) return false;
@@ -97,7 +90,6 @@ export default function OrdersReport() {
   };
 
 
-    // формат дати "ДД.ММ.ГГГГ ЧЧ:ММ"
     function fmtDateBG(isoString) {
     if (!isoString) return "";
     const d = new Date(isoString);
@@ -106,33 +98,28 @@ export default function OrdersReport() {
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
-  // Агрегации
   const summary = useMemo(() => {
     const sum = {
       totalOrders: 0,
       totalItems: 0,
       revenue: 0,
       byStatus: {},
-      topDishes: {}, // име -> общо количество
+      topDishes: {}, 
     };
 
     for (const o of orders) {
       sum.totalOrders += 1;
-      // оборот
       if (typeof o.total_cents === "number") {
         sum.revenue += o.total_cents / 100;
       } else if (Array.isArray(o.items)) {
-        // fallback ако total_cents го няма
         for (const it of o.items) {
           const price = (it.price_cents ?? 0) / 100;
           sum.revenue += price * (it.qty ?? 1);
         }
       }
-      // статуси
       const st = o.status || "unknown";
       sum.byStatus[st] = (sum.byStatus[st] || 0) + 1;
 
-      // брой ястия + топ ястия
       if (Array.isArray(o.items)) {
         sum.totalItems += o.items.length;
         for (const it of o.items) {
@@ -142,7 +129,6 @@ export default function OrdersReport() {
       }
     }
 
-    // подреден топ 10 ястия
     const topDishesArr = Object.entries(sum.topDishes)
       .map(([name, qty]) => ({ name, qty }))
       .sort((a, b) => b.qty - a.qty)
@@ -156,7 +142,6 @@ export default function OrdersReport() {
 
   const header = ["ID","Дата","Маса","Клиент","Сервитьор","Статус","Редове","Общо"];
 
-  // сглобяваме редовете
   const rows = orders.map(o => {
     const total =
       typeof o.total_cents === "number"
@@ -166,28 +151,22 @@ export default function OrdersReport() {
     const staffName = o.staff_name ?? o.staff?.name ?? "";
     return [
       o.id ?? "",
-      // държим датата като текст за да не я „преобръща“
       fmtDateBG(o.created_at || o.updated_at || ""),
       o.table_no ?? "",
       o.customer_name ?? "",
       staffName,  
       STATUS_BG[o.status] || o.status || "",
       (o.items || []).length,
-      // <- важно: истинско число за Excel (десетична запетая)
-      // подаваме без кавички и със запетая
       Number(total.toFixed(2))
     ];
   });
 
   const delimiter = ";";
   const totalColIndex = header.indexOf("Общо");
-  // функция: как да запишем клетка за CSV
   const cell = (v, colIdx) => {
-    // последната колона „Общо“ е число -> BG Excel очаква запетая
     if (colIdx === totalColIndex && typeof v === "number") {
-      return String(v).replace(".", ","); // 8.90 -> 8,90
+      return String(v).replace(".", ","); 
     }
-    // всичко друго като текст в кавички
     return `"${String(v).replace(/"/g, '""')}"`;
   };
 
@@ -195,7 +174,6 @@ export default function OrdersReport() {
     .map(r => r.map(cell).join(delimiter))
     .join("\n");
 
-  // BOM за кирилица
   const csv = "\uFEFF" + body;
 
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -214,7 +192,6 @@ export default function OrdersReport() {
         <h1>Отчет по поръчки</h1>
       </div>
 
-      {/* Филтри */}
       <div className="report-filters">
         <div className="rf-row">
           <div className="rf-col">
@@ -256,7 +233,6 @@ export default function OrdersReport() {
         </div>
       </div>
 
-      {/* Обобщение */}
       {!!orders.length && (
         <div className="report-stats">
           <div className="stat-card">
@@ -288,7 +264,6 @@ export default function OrdersReport() {
         </div>
       )}
 
-      {/* Таблица */}
       {!!orders.length && (
         <div className="report-table-wrap">
           <table className="report-table">
