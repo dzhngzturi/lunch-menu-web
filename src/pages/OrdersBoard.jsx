@@ -431,7 +431,7 @@ export default function OrdersBoard({ station }) {
                     </>
                   </div>
                 </div>
-
+                <div className="table-wrap">
                 <table className="items">
                   <thead>
                     <tr>
@@ -460,6 +460,7 @@ export default function OrdersBoard({ station }) {
                     ))}
                   </tbody>
                 </table>
+                </div>
 
                 <div className="order-status-picker">
                   <span className="order-status-label">Промени статус на поръчката:</span>

@@ -1,0 +1,148 @@
+/* Общи стилове за таблицата */
+.table-responsive {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Стилизиране на заглавната част на таблицата (thead) */
+.items thead {
+  background-color: #f1f5f9;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.items th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  white-space: nowrap;
+}
+
+/* Стилизиране на тялото на таблицата (tbody) и редовете */
+.items tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.items tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.items tbody tr.dragging {
+  background-color: #e0e7ff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0.8;
+  transform: scale(1.01);
+  z-index: 10;
+}
+
+.items td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+/* Специални стилове за клетките и техните елементи */
+
+/* Клетка за плъзгане (drag handle) */
+.items .drag-cell {
+  width: 40px;
+  cursor: grab;
+  text-align: center;
+}
+
+.items .drag-handle {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+  color: #a0aec0;
+  cursor: grab;
+}
+
+.items tbody tr.dragging .drag-handle {
+  cursor: grabbing;
+}
+
+/* Клетка за снимка (thumbnail) */
+.thumb-cell {
+  width: 80px;
+}
+
+.thumb-cell .thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.noimg {
+  font-size: 0.8rem;
+  color: #999;
+  text-align: center;
+  display: block;
+}
+
+/* Клетка за името на ястието */
+.cell-name {
+  font-weight: 500;
+}
+
+/* Клетка за броя на ястията */
+.cell-count {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Стилизиране на бутоните в клетката 'actions' */
+.actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actions .btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-left: 0.5rem;
+}
+
+.actions .btn:hover {
+  transform: translateY(-1px);
+}
+
+.actions .btn.secondary {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.actions .btn.secondary:hover {
+  background-color: #cbd5e0;
+}
+
+.actions .btn.danger {
+  background-color: #f56565;
+  color: #fff;
+}
+
+.actions .btn.danger:hover {
+  background-color: #e53e3e;
+}
+
+/* Стил за "Няма резултати" */
+.items td[colspan="5"] {
+  text-align: center;
+  font-style: italic;
+  color: #718096;
+}

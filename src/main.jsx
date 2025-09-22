@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./auth";
+import LoaderOverlay from "./components/LoaderOverlay.jsx";
 
 // PUBLIC
 const SiteLayout      = lazy(() => import("./layout/SiteLayout.jsx"));
@@ -11,14 +12,14 @@ const Home            = lazy(() => import("./pages/Home.jsx"));
 const PublicMenu      = lazy(() => import("./pages/PublicMenu.jsx"));
 const Contact         = lazy(() => import("./pages/Contact.jsx"));
 const About           = lazy(() => import("./pages/About.jsx"));
-const DishDetails  = lazy(() => import("./pages/DishDetails.jsx"));
+const DishDetails     = lazy(() => import("./pages/DishDetails.jsx"));
 // AUTH
 const Login           = lazy(() => import("./pages/Login.jsx"));
 const Logout          = lazy(() => import("./pages/Logout.jsx"));
 
 // ADMIN
-const NotFoundAdmin       = lazy(() => import("./pages/NotFoundAdmin.jsx"));
-const NotFoundPublic       = lazy(() => import("./pages/NotFoundPublic.jsx"));
+const NotFoundAdmin   = lazy(() => import("./pages/NotFoundAdmin.jsx"));
+const NotFoundPublic  = lazy(() => import("./pages/NotFoundPublic.jsx"));
 const AdminDashboard  = lazy(() => import("./pages/AdminDashboard.jsx"));
 const AdminLayout     = lazy(() => import("./layout/AdminLayout.jsx"));
 const CategoriesTable = lazy(() => import("./pages/CategoriesTable.jsx"));
@@ -33,23 +34,34 @@ const StaffPage       = lazy(() => import("./pages/StaffPage.jsx"));
 import RequireAuth from "./components/RequireAuth.jsx";
 import RequireRole from "./components/RequireRole.jsx";
 
-const suspense = (el) => (
-  <Suspense fallback={<div className="page-loading">Зареждане…</div>}>{el}</Suspense>
+// Помощник: Suspense с нашия оувърлей
+const suspense = (el, { backdrop = "rgba(255,255,255,0.0)", text = "Зареждам…" } = {}) => (
+  <Suspense
+    fallback={
+      <LoaderOverlay
+        text={text}
+        color="#3b82f6"      // син
+        size={54}
+        backdrop={backdrop}  // прозрачен по подразбиране
+      />
+    }
+  >
+    {el}
+  </Suspense>
 );
 
 const router = createBrowserRouter([
   // === PUBLIC ===
   {
-    element: suspense(<SiteLayout />),
+    // За layout-а: пълен бял фон (първоначално)
+    element: suspense(<SiteLayout />, { backdrop: "#ffffff", text: "Зареждам сайта…" }),
     children: [
       { index: true,     element: suspense(<Home />) },
       { path: "menu",    element: suspense(<PublicMenu />) },
       { path: "menu/dish/:id", element: suspense(<DishDetails />) },
       { path: "contact", element: suspense(<Contact />) },
       { path: "about",   element: suspense(<About />) },
-      { path: "*",   element: suspense(<NotFoundPublic />) },
-
-      // ⚠️ НЯМА catch-all тук, за да НЕ се рендерира SiteLayout при 404
+      { path: "*",       element: suspense(<NotFoundPublic />) },
     ],
   },
 
@@ -62,13 +74,12 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <RequireAuth>
-        {suspense(<AdminLayout />)}
+        {/* За AdminLayout – прозрачен бекдроп, за да си личи app-shell */}
+        {suspense(<AdminLayout />, { backdrop: "rgba(255,255,255,0.0)", text: "Зареждам админ панела…" })}
       </RequireAuth>
     ),
     children: [
-      // ✅ Остави само ЕДИН index (избери какво да е началото на админ панела)
       { index: true, element: suspense(<AdminDashboard />) },
-      // или вместо горния ред може:
       // { index: true, element: <Navigate to="dishes" replace /> },
 
       {
@@ -123,13 +134,9 @@ const router = createBrowserRouter([
         ),
       },
 
-      // 404 САМО за /admin/*
       { path: "*", element: suspense(<NotFoundAdmin />) },
     ],
   },
-
-  // === ГЛОБАЛЕН 404 (без SiteLayout) ===
-//{ path: "*", element: suspense(<NotFoundPublic />) },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

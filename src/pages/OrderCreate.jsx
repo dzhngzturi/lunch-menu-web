@@ -252,7 +252,7 @@ export default function CreateOrder() {
       {err && <div className="alert error" style={{ marginTop: 8 }}>{err}</div>}
 
       <div className="co-actions">
-        <button className="btn" onClick={() => nav(-1)}>Отказ</button>
+        <button className="btn-secondary" onClick={() => nav(-1)}>Отказ</button>
         <button
           className="btn btn-primary btn-lg"
           disabled={saving || items.length === 0}

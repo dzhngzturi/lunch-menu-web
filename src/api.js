@@ -6,7 +6,6 @@ const FALLBACK = 'http://127.0.0.1:8000/api';
 const ENV_BASE = import.meta.env.VITE_API_BASE_URL;
 export const baseURL = (ENV_BASE && ENV_BASE.trim()) ? ENV_BASE.trim() : FALLBACK;
 
-
 // <-- ДОБАВЕНО: origin без /api
 export const API_ORIGIN = baseURL.replace(/\/api\/?$/, '');
 
@@ -21,8 +20,9 @@ export const buildStorageUrl = (path) => {
 /* ===== AXIOS INSTANCE ===== */
 export const api = axios.create({
   baseURL,
-  headers: { Accept: "application/json" },
+  headers: { Accept: "application/json"},
 });
+
 
 // Bearer token на всяка заявка
 api.interceptors.request.use((config) => {
@@ -49,6 +49,11 @@ api.interceptors.response.use(
 );
 
 /* ===================== AUTH ===================== */
+
+
+/* ===== REORDER ENDPOINTS ===== */
+export const reorderDishes     = (ids) => api.post("/dishes/reorder", { ids });
+export const reorderCategories = (ids) => api.post("/categories/reorder", { ids });
 
 // Login → очакваме { access_token, user }
 export async function login(email, password) {

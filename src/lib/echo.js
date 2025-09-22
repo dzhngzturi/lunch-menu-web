@@ -1,21 +1,32 @@
 // src/lib/echo.js
-import Echo from "laravel-echo";
-import Pusher from "pusher-js";
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
-// Reverb говори Pusher-протокол → ползваме pusher-js клиента
+// laravel-echo изисква това:
 window.Pusher = Pusher;
 
-const KEY   = import.meta.env.VITE_REVERB_APP_KEY;
-const HOST  = import.meta.env.VITE_REVERB_HOST || window.location.hostname;
-const PORT  = Number(import.meta.env.VITE_REVERB_PORT || 8080);
-const TLS   = (import.meta.env.VITE_REVERB_SCHEME || "http") === "https";
+const KEY     = import.meta.env.VITE_PUSHER_KEY || '';
+const CLUSTER = import.meta.env.VITE_PUSHER_CLUSTER || 'eu';
 
-export const echo = new Echo({
-  broadcaster: "reverb",
-  key: KEY,
-  wsHost: HOST,
-  wsPort: PORT,
-  wssPort: PORT,
-  forceTLS: TLS,
-  enabledTransports: ["ws", "wss"],
-});
+// Ако няма ключ – не инициализирай Echo, за да не крашва приложението
+let echo = null;
+
+if (KEY) {
+  echo = new Echo({
+    broadcaster: 'pusher',
+    key: KEY,
+    cluster: CLUSTER,
+    forceTLS: true,
+    enabledTransports: ['ws', 'wss'],
+    // (по желание) ако искаш експлицитно хост/порт:
+    // wsHost: `ws-${CLUSTER}.pusher.com`,
+    // wsPort: 80,
+    // wssPort: 443,
+  });
+} else {
+  console.warn('[Echo] VITE_PUSHER_KEY липсва – Echo няма да бъде стартиран.');
+}
+
+export default echo;
+// ако някъде ползваш именован импорт:
+export { echo };

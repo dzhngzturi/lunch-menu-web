@@ -1,8 +1,13 @@
 /* ===== Logout (outline -> red on hover) ===== */
+:root{
+  font-size: 20px;
+}
+
+/* Logout */
 .admin-logout {
   display: block;
-  width: 95%;          /* вместо 100%, за да не опира до ръба */
-  margin: 0 auto 0 0;  /* auto вдясно, 0 вляво → ще стои леко наляво */
+  width: 95%;
+  margin: 0 auto 0 0;
   padding: 10px;
   text-align: center;
   border: 1px solid #ccc;
@@ -18,10 +23,6 @@
   color: #dc3545;
 }
 
-/* ========== ТАБЛИЦИ (общи) ========== */
-.table-wrapper{width:100%;overflow-x:auto}
-.table{width:100%;border-collapse:collapse;min-width:500px}
-.table th,.table td{padding:10px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
 
 /* ========== ФОРМИ / БУТОНИ ========== */
 .toolbar{display:flex;gap:8px;margin-bottom:12px}
@@ -196,11 +197,16 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
   border-radius: 6px;
 }
 
-/* Бутоните под формата */
+/* футър – винаги видим */
 .dish-form .actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 16px;
   display: flex;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .dish-form .actions .btn-save {
@@ -235,13 +241,16 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 
 /* контейнерът на формата */
 .dish-form {
-  max-width: 880px;   /* по-тясна картичка */
-  margin: 0 auto;     /* център */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* малко въздух под заглавието */
-.dish-form h3 {
-  margin-bottom: 14px;
+.dish-form > h3 {
+  padding: 14px 16px;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* по-ясно състояние при disable */
@@ -361,8 +370,6 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 
 
 
-.items { width:100%; border-collapse:collapse; }
-.items th, .items td { border-top:1px solid #f0f2f8; padding:8px; }
 .a-right { text-align:right; }
 .muted { color:#7b8190; }
 .pager { display:flex; align-items:center; gap:12px; justify-content:center; margin-top:10px; }
@@ -403,31 +410,6 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
   content: attr(data-ico);
   font-size: .9em;
 }
-@media (min-width: 640px) {
-  .pill::before { margin-right: .15rem; } /* малко въздух на по-широко */
-   .items thead { display: none; }
-  .items, .items tbody, .items tr, .items td { display: block; width: 100%; }
-  .items tr {
-    background: #fff;
-    border: 1px solid #eceff3;
-    border-radius: 12px;
-    margin-bottom: .6rem;
-  }
-  .items td {
-    display: flex;
-    justify-content: space-between;
-    gap: .75rem;
-    padding: .25rem 0;
-    font-size: .95rem;
-  }
-  .items td::before {
-    content: attr(data-th);
-    color: #6b7280;            /* заглавие */
-    font-weight: 600;
-  }
-  .items td:last-child { padding-top: .5rem; }
-  .items .a-right { justify-content: flex-end; }
-}
 
 .toolbar {
   display: flex;
@@ -438,17 +420,6 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 .toolbar .filters select { height: 36px; }
 .toolbar .spacer { flex: 1; }
 
-/* остава видим отгоре при скрол на мобилно */
-@media (max-width: 640px) {
-  .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #fff;
-    padding: .5rem .25rem;
-    border-bottom: 1px solid #eef1f4;
-  }
-}
 
 /* ===== Badges (FA) ===== */
 .badge {
@@ -506,23 +477,7 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
   display:flex; gap:.75rem; align-items:center; margin-bottom:.85rem;
 }
 .toolbar .spacer { flex:1; }
-@media (max-width:640px){
-  .toolbar { position: sticky; top: 0; z-index: 5; background:#fff;
-             padding:.5rem .25rem; border-bottom:1px solid #eef1f4; }
-}
 
-/* cards view for items on mobile (ако вече добави горните, запази ги) */
-@media (max-width: 640px) {
-  .items thead { display:none; }
-  .items, .items tbody, .items tr, .items td { display:block; width:100%; }
-  .items tr {
-    background:#fff; border:1px solid #eceff3; border-radius:12px;
-    margin-bottom:.65rem;
-  }
-  .items td { display:flex; justify-content:space-between; gap:.75rem; padding:.25rem 0; }
-  .items td::before { content: attr(data-th); color:#6b7280; font-weight:600; }
-  .items .a-right { justify-content:flex-end; }
-}
 
 /* ===== Цветни бутони за смяна на статус (като кръгчетата) ===== */
 .order-status-picker {
@@ -998,6 +953,8 @@ button.logout-btn:active {
 .admin-main .staff-page .modal-head > button{height:32px;width:32px;border-radius:8px;border:1px solid #e0e2ea;background:#fff}
 .admin-main .staff-page .modal-body{display:grid;gap:10px;padding:14px 16px}
 .admin-main .staff-page .modal-body label{display:grid;gap:6px;font-size:14px;color:#333}
+
+
 .admin-main .staff-page .modal-body input,
 .admin-main .staff-page .modal-body select{
   height:36px;padding:0 10px;border:1px solid #d6d6e0;border-radius:10px;background:#fff
@@ -1264,15 +1221,6 @@ button.logout-btn:active {
              padding:.5rem .25rem; border-bottom:1px solid #eef1f4; }
 }
 
-/* Таблица с ястия – мобилен „cards“ режим (без да раздува ширина) */
-@media (max-width:640px){
-  .items thead { display:none; }
-  .items, .items tbody, .items tr, .items td { display:block; width:100%; }
-  .items tr { background:#fff; border:1px solid #eceff3; border-radius:12px; margin-bottom:.65rem; }
-  .items td { display:flex; justify-content:space-between; gap:.75rem; padding:.25rem 0; }
-  .items td::before { content: attr(data-th); color:#6b7280; font-weight:600; }
-}
-
 /* Пикер за статус на поръчка – да се пречупва, да не „прелива“ */
 .order-status-picker { display:flex; align-items:center; gap:12px; flex-wrap: wrap; }
 .order-status-options { display:flex; flex-wrap: wrap; gap:8px; }
@@ -1287,75 +1235,26 @@ button.logout-btn:active {
 }
 .logout .btn:hover, button.logout-btn:hover { background:#dc2626; border-color:#dc2626; }
 
-/* === Dishes page – full width + better table === */
-.admin-table.dishes {
-  table-layout: fixed;   /* фиксирани колони */
-  width: 100%;
-}
-
-.admin-table.dishes th,
-.admin-table.dishes td {
-  text-align: left;
-  vertical-align: middle;
-  padding: 8px 12px;
-}
-
-/* Колона "Снимка" */
-.admin-table.dishes th:nth-child(1),
-.admin-table.dishes td:nth-child(1) {
-  width: 80px;  /* фиксирана ширина */
-  text-align: center;
-}
-
-/* Колона "Име" */
-.admin-table.dishes th:nth-child(2),
-.admin-table.dishes td:nth-child(2) {
-  width: 200px;
-}
-
-/* Колона "Категория" */
-.admin-table.dishes th:nth-child(3),
-.admin-table.dishes td:nth-child(3) {
-  width: 150px;
-}
-
-/* Колона "Тип меню" */
-.admin-table.dishes th:nth-child(4),
-.admin-table.dishes td:nth-child(4) {
-  width: 120px;
-}
-
-/* Колона "Станция" */
-.admin-table.dishes th:nth-child(5),
-.admin-table.dishes td:nth-child(5) {
-  width: 100px;
-}
-
-/* Колона "Цена" */
-.admin-table.dishes th:nth-child(6),
-.admin-table.dishes td:nth-child(6) {
-  width: 80px;
-  text-align: right;
-}
-
-/* Колона "Действия" */
-.admin-table.dishes th:last-child,
-.admin-table.dishes td:last-child {
-  width: 160px;
-  text-align: right;
-}
 
 
 /*Category Modal*/
 /* лек модал */
 .modal-backdrop {
-  position: fixed; inset: 0; background: rgba(0,0,0,.35);
-  display: flex; align-items: center; justify-content: center; z-index: 50;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .modal {
-  width: min(520px, 92vw);
-  background: #fff; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,.25);
-  overflow: hidden;
+  background: #fff;
+  width: min(900px, 92vw);
+  max-height: 92vh;               /* важно: не надвишава екрана */
+  border-radius: 14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,.25);
+  overflow: hidden;               /* скрива излишното */
 }
 .modal-header { padding: 14px 16px; border-bottom: 1px solid #eee; }
 .modal-body   { padding: 16px; }
@@ -1388,18 +1287,7 @@ button.logout-btn:active {
 }
 .dishes-page .toolbar .spacer{ flex:1; }
 
-/* таблицата да заеме 100% */
-.table-responsive{ width:100%; overflow-x:auto; }
-.admin-table{ width:100%; border-collapse:separate; border-spacing:0; background:#fff;
-  border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.04);
-}
-.admin-table thead th{
-  background:#f7f9fb; color:#3a4252; font-weight:600;
-  padding:12px 16px; border-bottom:1px solid #ecedf3;
-}
-.admin-table td{ padding:12px 16px; border-bottom:1px solid #f0f2f6; }
-.admin-table tbody tr:last-child td{ border-bottom:none; }
-.admin-table td.right{ text-align:right; }
+
 
 /* малко въздух между таблицата и пагинацията */
 .dishes-page .pager{ margin-top:16px; }
@@ -1407,19 +1295,7 @@ button.logout-btn:active {
   display:flex; align-items:center; justify-content:center; gap:12px;
 }
 
-/* фино hover за редовете */
-.admin-table tbody tr:hover td{ background:#fbfcfe; }
 
-.dash-card {
-  background:#fff;
-  border:1px solid #eceff3;
-  border-radius:12px;
-  padding:16px;
-  box-shadow:0 1px 2px rgba(0,0,0,.04);
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
 
 /* NotFound */ 
 
@@ -1677,3 +1553,168 @@ button.logout-btn:active {
 
 .preview { margin-top:.5rem; }
 .preview img { max-width:220px; max-height:180px; border-radius:10px; display:block; }
+
+.drag-cell{width:40px;text-align:center;cursor:grab}
+.drag-handle{user-select:none;font-weight:700;opacity:.5}
+tr.dragging{opacity:.6}
+tbody tr{transition:background .15s ease}
+tbody tr:hover .drag-handle{opacity:.9}
+
+/* ============= WRAPPER (slider на мобилно) ============= */
+.table-responsive{
+  width:100%;
+  overflow-x:auto;                    /* хоризонтален скрол */
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+}
+
+/* ============= BASE TABLE (shared за .items и .admin-table.dishes) ============= */
+.items,
+.admin-table.dishes{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:#fff;
+  border:1px solid #eceff3;
+  border-radius:12px;
+  box-shadow:0 2px 12px rgba(0,0,0,.04);
+  table-layout:fixed;                 /* стабилни колони на десктоп */
+  min-width:760px;                    /* за да се появи скролът на тесни екрани */
+}
+
+.items thead th,
+.admin-table.dishes thead th{
+  background:#f7f9fb;
+  color:#3a4252;
+  font-weight:600;
+  padding:12px 16px;
+  border-bottom:1px solid #ecedf3;
+  text-align:left;
+  white-space:nowrap;
+}
+
+.items td,
+.admin-table.dishes td{
+  padding:12px 16px;
+  border-bottom:1px solid #f0f2f6;
+  vertical-align:middle;
+}
+
+.items tbody tr:last-child td,
+.admin-table.dishes tbody tr:last-child td{
+  border-bottom:none;
+}
+
+.items tbody tr:hover td,
+.admin-table.dishes tbody tr:hover td{
+  background:#fbfcfe;
+}
+
+/* ============= Drag ============= */
+.drag-cell{ width:40px; text-align:center; }
+.drag-handle{ user-select:none; cursor:grab; opacity:.45; font-weight:700; }
+tbody tr:hover .drag-handle{ opacity:.85; }
+tr.dragging{ opacity:.6; }
+
+/* ============= Thumb ============= */
+.thumb-cell{ width:80px; }
+.thumb{
+  width:56px; height:56px; object-fit:cover;
+  border-radius:8px; display:block;
+  border:1px solid #eef1f4;
+}
+.noimg{ color:#9aa3b2; font-size:.9rem; }
+
+/* ============= Actions ============= */
+td.actions{ text-align:right; white-space:nowrap; }
+td.actions .btn + .btn{ margin-left:8px; }
+
+/* ============= Колони – категории (items) ============= */
+.items .col-drag   { width: 40px; }
+.items .col-thumb  { width: 124px; }
+.items .col-name   { width: auto; }                 /* взема остатъка */
+.items .col-count  { width: 90px;  text-align:center; }
+.items .col-actions{ width: 200px; }
+
+/* ============= Колони – ястия (admin-table.dishes) ============= */
+.admin-table.dishes th:nth-child(1),
+.admin-table.dishes td:nth-child(1){ width:40px;  text-align:center; }  /* drag */
+.admin-table.dishes th:nth-child(2),
+.admin-table.dishes td:nth-child(2){ width:92px; }                       /* thumb */
+.admin-table.dishes th:nth-child(3),
+.admin-table.dishes td:nth-child(3){ width:240px; }                      /* name  */
+.admin-table.dishes th:nth-child(4),
+.admin-table.dishes td:nth-child(4){ width:180px; }                      /* cat   */
+.admin-table.dishes th:nth-child(5),
+.admin-table.dishes td:nth-child(5){ width:140px; }                      /* menu  */
+.admin-table.dishes th:nth-child(6),
+.admin-table.dishes td:nth-child(6){ width:120px; }                      /* station */
+.admin-table.dishes th:nth-child(7),
+.admin-table.dishes td:nth-child(7){ width:110px; text-align:right; }    /* price */
+.admin-table.dishes th:nth-child(8),
+.admin-table.dishes td:nth-child(8){ width:220px; text-align:right; }    /* actions */
+
+/* ============= Дребни помощници ============= */
+.right{ text-align:right; }
+.price{ font-variant-numeric: tabular-nums; }
+
+/* ============= Desktop tweak за "Брой ястия" ============= */
+@media (min-width:1024px){
+  .items .col-count{ width:120px; text-align:center; }
+}
+
+/* ============= ВАЖНО: винаги таблица (без card-mode) ============= */
+@media (max-width:640px){
+  .items thead{ display:table-header-group !important; }
+  .items tbody{ display:table-row-group   !important; }
+  .items tr   { display:table-row         !important; }
+  .items th,
+  .items td   { display:table-cell        !important; }
+  .items td::before{ content:none !important; }
+}
+
+/* === OrdersBoard: хоризонтален скрол на тесни екрани === */
+.table-wrap{
+  width: 100%;
+  overflow-x: auto;                 /* показва слайдър надясно при нужда */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* таблицата да има минимална ширина, за да не се смачкват колоните */
+.table-wrap > .items{
+  min-width: 640px;                 /* 600–720px е ок; при нужда пипни стойността */
+  table-layout: auto;               /* оставяме я да си разпределя ширини */
+}
+
+/* клетки по подразбиране да не пълзят извън таблицата */
+.table-wrap .items td{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* никога не режи заглавията */
+.table-wrap .items th{
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Бележката може да се пренася (единствената „дълга“ колона) */
+.items td:nth-child(3){
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Бутоните за статус да се пречупват при тесно */
+.item-status-buttons{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;        /* запазва усещането "вдясно" */
+}
+
+/* на съвсем малки екрани скрий текста в бутоните (само иконки) */
+@media (max-width: 420px){
+  .item-status-buttons .label{ display: none; }
+}
