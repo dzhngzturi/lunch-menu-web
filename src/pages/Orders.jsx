@@ -2,7 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 
 export default function Orders() {
   return (
-    <div className="container" style={{ padding: 24 }}>
+    <div className="container">
       <h1 style={{ marginBottom: 16 }}>Поръчки</h1>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>

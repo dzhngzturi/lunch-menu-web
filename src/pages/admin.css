@@ -1,6 +1,6 @@
 /* ===== Logout (outline -> red on hover) ===== */
 :root{
-  font-size: 20px;
+  font-size: 18px;
 }
 
 /* Logout */
@@ -159,6 +159,7 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
 .dish-form .field label {
   font-size: 14px;
   font-weight: 500;
+  margin-top: 20px;
   margin-bottom: 6px;
   color: #374151;
 }
@@ -393,10 +394,7 @@ img.thumb{width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px s
   white-space: nowrap;
 }
 
-/* компактни на съвсем малки екрани */
-@media (max-width: 420px) {
-  .pill { height: 20px; padding: 0 .4rem; font-size: .7rem; }
-}
+
 
 /* цветове */
 .pill-new         { --pill-bg:#e9f2ff; --pill-fg:#1864ab; }
@@ -1671,6 +1669,8 @@ td.actions .btn + .btn{ margin-left:8px; }
   .items th,
   .items td   { display:table-cell        !important; }
   .items td::before{ content:none !important; }
+  .admin-container { padding: 8px; }      /* по-малки странични отстъпи */
+  .card { padding: 12px; width: 100%; }  
 }
 
 /* === OrdersBoard: хоризонтален скрол на тесни екрани === */
@@ -1714,7 +1714,147 @@ td.actions .btn + .btn{ margin-left:8px; }
   justify-content: flex-end;        /* запазва усещането "вдясно" */
 }
 
-/* на съвсем малки екрани скрий текста в бутоните (само иконки) */
-@media (max-width: 420px){
-  .item-status-buttons .label{ display: none; }
+
+/* === MOBILE FIX: поръчка – заглавният ред да не прелива извън картата === */
+@media (max-width: 640px) {
+  /* позволи пренасяне на ред */
+  .order-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* махни nowrap на мобилно */
+  .order-id,
+  .order-sub {
+    white-space: normal !important;
+    overflow-wrap: anywhere;     /* пренася и много дълги думи/имена */
+    word-break: break-word;
+  }
+
+  /* картата да ползва цялата ширина */
+  .admin-container { padding: 8px !important; }     /* по-малки странични отстъпи */
+  .card {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Намали базовия шрифт на съвсем малки екрани, за да не „раздува“ редовете */
+@media (max-width: 480px) {
+  :root { font-size: 16px; }   /* вместо глобални 20px */
+}
+
+/* === MOBILE FIX: поръчка – заглавният ред да не прелива извън картата === */
+@media (max-width: 640px) {
+  /* позволи пренасяне на ред */
+  .order-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* махни nowrap на мобилно */
+  .order-id,
+  .order-sub {
+    white-space: normal !important;
+    overflow-wrap: anywhere;     /* пренася и много дълги думи/имена */
+    word-break: break-word;
+  }
+
+  /* картата да ползва цялата ширина */
+  .admin-container { padding: 8px !important; }     /* по-малки странични отстъпи */
+  .card {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Намали базовия шрифт на съвсем малки екрани, за да не „раздува“ редовете */
+@media (max-width: 480px) {
+  :root { font-size: 16px; }   /* вместо глобални 20px */
+}
+
+/* Cards full-width on mobile; no weird side gaps */
+@media (max-width: 640px){
+  .admin-container { padding: 10px; }
+  .card{
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+  }
+}
+
+/* Order header: tidy two-line layout on mobile */
+.order-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  flex-wrap:wrap;
+}
+
+/* лявата част (иконка + „Поръчка #…“) да държи един ред, без да се реже */
+.order-title{
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  min-width:0;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+
+/* десният „meta“ блок (Маса / Клиент) да се пренася красиво */
+.order-meta{
+  display:flex;
+  gap:.5rem;
+  flex-wrap:wrap;
+  min-width: 0;
+}
+
+.order-id{ font-weight:700; white-space:nowrap; }
+.order-sub{ color:#475569; white-space:nowrap; }
+
+/* Table inside order: allow horizontal scroll on very narrow screens */
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.table-wrap > .items{
+  min-width: 600px;      /* можеш да вдигнеш до 640/720 при желание */
+  table-layout:auto;
+}
+.table-wrap .items th{
+  white-space:nowrap;
+}
+.table-wrap .items td{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+/* единствено бележката може да се пренася на няколко реда */
+.table-wrap .items td.note,
+.items td:nth-child(3){ white-space:normal; word-break:break-word; }
+
+/* Toolbar wraps nicely on small screens */
+.toolbar{
+  display:flex; gap:.75rem; align-items:center; flex-wrap:wrap;
+}
+.toolbar .filters{
+  display:flex; gap:.5rem; min-width:0; flex:1 1 260px;
+}
+@media (max-width:640px){
+  .toolbar{ position:sticky; top:0; z-index:5; background:#fff; padding:.5rem .25rem; border-bottom:1px solid #eef1f4; }
 }
