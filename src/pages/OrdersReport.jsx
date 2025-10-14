@@ -5,16 +5,16 @@ import { listOrdersAll } from "../api";
 const STATIONS = [
   { value: "", label: "Всички станции" },
   { value: "kitchen", label: "Кухня" },
-  { value: "bar",     label: "Бар" },
+  { value: "bar", label: "Бар" },
 ];
 
 const STATUSES = [
   { value: "", label: "Всички статуси" },
-  { value: "new",         label: "Нова" },
+  { value: "new", label: "Нова" },
   { value: "in_progress", label: "В процес" },
-  { value: "ready",       label: "Готово" },
-  { value: "done",        label: "Приключена" },
-  { value: "cancel",      label: "Отказана" },
+  { value: "ready", label: "Готово" },
+  { value: "done", label: "Приключена" },
+  { value: "cancel", label: "Отказана" },
 ];
 
 const selectStyles = {
@@ -46,43 +46,46 @@ function parseDate(s) {
 }
 
 export default function OrdersReport() {
-  const [dateFrom, setDateFrom]     = useState(""); 
-  const [dateTo, setDateTo]         = useState("");
-  const [station, setStation]       = useState(STATIONS[0]);
-  const [status, setStatus]         = useState(STATUSES[0]);
-  const [tableNo, setTableNo]       = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [station, setStation] = useState(STATIONS[0]);
+  const [status, setStatus] = useState(STATUSES[0]);
+  const [tableNo, setTableNo] = useState("");
 
-  const [loading, setLoading]       = useState(false);
-  const [orders, setOrders]         = useState([]);
-  const [error, setError]           = useState("");
+  const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [error, setError] = useState("");
 
   const generate = async () => {
     setLoading(true);
     setError("");
     setOrders([]);
     try {
-      const baseFilters = {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const params = {
+        tz,
+        per_page: 100,
+        ...(tableNo.trim() ? { table_no: tableNo.trim() } : {}),
         ...(station.value ? { station: station.value } : {}),
-        ...(status.value   ? { status: status.value }   : {}),
+        ...(status.value ? { status: status.value } : {}),
       };
-      const all = await listOrdersAll(baseFilters);
 
-      const from = dateFrom ? parseDate(dateFrom + "T00:00:00") : null;
-      const to   = dateTo   ? parseDate(dateTo   + "T23:59:59") : null;
+      // Ако има избрани дати → прати диапазон; иначе ползвай период (по подразбиране today)
+      if (dateFrom && dateTo) {
+        params.from = dateFrom;   // YYYY-MM-DD
+        params.to = dateTo;     // YYYY-MM-DD
+      } else if (dateFrom) {
+        params.from = dateFrom;
+        params.to = dateFrom;
+      } else {
+        params.period = "today";  // today | 7d | 1m | 3m
+      }
 
-      const filtered = all.filter(o => {
-        if (tableNo && String(o.table_no || "").trim() !== String(tableNo).trim()) return false;
-        if (from || to) {
-          const created = parseDate(o.created_at || o.updated_at || o.date || 0);
-          if (from && created < from) return false;
-          if (to   && created > to)   return false;
-        }
-        return true;
-      });
-
-      setOrders(filtered);
+      const all = await listOrdersAll(params);
+      setOrders(all);
     } catch (e) {
-      console.error(e);
+      console.error("API error:", e.response?.status, e.response?.data || e.message);
       setError("Неуспешно зареждане на данни.");
     } finally {
       setLoading(false);
@@ -90,13 +93,13 @@ export default function OrdersReport() {
   };
 
 
-    function fmtDateBG(isoString) {
+  function fmtDateBG(isoString) {
     if (!isoString) return "";
     const d = new Date(isoString);
     if (isNaN(d)) return isoString;
     const pad = (n) => String(n).padStart(2, "0");
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
+  }
 
   const summary = useMemo(() => {
     const sum = {
@@ -104,7 +107,7 @@ export default function OrdersReport() {
       totalItems: 0,
       revenue: 0,
       byStatus: {},
-      topDishes: {}, 
+      topDishes: {},
     };
 
     for (const o of orders) {
@@ -138,52 +141,52 @@ export default function OrdersReport() {
   }, [orders]);
 
   const exportCSV = () => {
-  if (!orders.length) return;
+    if (!orders.length) return;
 
-  const header = ["ID","Дата","Маса","Клиент","Сервитьор","Статус","Редове","Общо"];
+    const header = ["ID", "Дата", "Маса", "Клиент", "Сервитьор", "Статус", "Редове", "Общо"];
 
-  const rows = orders.map(o => {
-    const total =
-      typeof o.total_cents === "number"
-        ? o.total_cents / 100
-        : (o.items || []).reduce((s, it) => s + ((it.price_cents || 0) / 100) * (it.qty || 1), 0);
-    
-    const staffName = o.staff_name ?? o.staff?.name ?? "";
-    return [
-      o.id ?? "",
-      fmtDateBG(o.created_at || o.updated_at || ""),
-      o.table_no ?? "",
-      o.customer_name ?? "",
-      staffName,  
-      STATUS_BG[o.status] || o.status || "",
-      (o.items || []).length,
-      Number(total.toFixed(2))
-    ];
-  });
+    const rows = orders.map(o => {
+      const total =
+        typeof o.total_cents === "number"
+          ? o.total_cents / 100
+          : (o.items || []).reduce((s, it) => s + ((it.price_cents || 0) / 100) * (it.qty || 1), 0);
 
-  const delimiter = ";";
-  const totalColIndex = header.indexOf("Общо");
-  const cell = (v, colIdx) => {
-    if (colIdx === totalColIndex && typeof v === "number") {
-      return String(v).replace(".", ","); 
-    }
-    return `"${String(v).replace(/"/g, '""')}"`;
+      const staffName = o.staff_name ?? o.staff?.name ?? "";
+      return [
+        o.id ?? "",
+        fmtDateBG(o.created_at || o.updated_at || ""),
+        o.table_no ?? "",
+        o.customer_name ?? "",
+        staffName,
+        STATUS_BG[o.status] || o.status || "",
+        (o.items || []).length,
+        Number(total.toFixed(2))
+      ];
+    });
+
+    const delimiter = ";";
+    const totalColIndex = header.indexOf("Общо");
+    const cell = (v, colIdx) => {
+      if (colIdx === totalColIndex && typeof v === "number") {
+        return String(v).replace(".", ",");
+      }
+      return `"${String(v).replace(/"/g, '""')}"`;
+    };
+
+    const body = [header, ...rows]
+      .map(r => r.map(cell).join(delimiter))
+      .join("\n");
+
+    const csv = "\uFEFF" + body;
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "orders-report.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   };
-
-  const body = [header, ...rows]
-    .map(r => r.map(cell).join(delimiter))
-    .join("\n");
-
-  const csv = "\uFEFF" + body;
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href = url;
-  a.download = "orders-report.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-};
 
 
   return (
@@ -250,9 +253,9 @@ export default function OrdersReport() {
           <div className="stat-card">
             <div className="stat-label">По статус</div>
             <div className="stat-note">
-                {Object.entries(summary.byStatus).map(([k,v]) => (
+              {Object.entries(summary.byStatus).map(([k, v]) => (
                 <span key={k} className="chip">{STATUS_BG[k] || k}: {v}</span>
-                ))}
+              ))}
             </div>
           </div>
           <div className="stat-card">
@@ -284,8 +287,8 @@ export default function OrdersReport() {
                 const total =
                   typeof o.total_cents === "number"
                     ? (o.total_cents / 100)
-                    : ((o.items || []).reduce((s, it) => s + ((it.price_cents||0)/100) * (it.qty||1), 0));
-                    const staffName = o.staff_name ?? o.staff?.name ?? "";
+                    : ((o.items || []).reduce((s, it) => s + ((it.price_cents || 0) / 100) * (it.qty || 1), 0));
+                const staffName = o.staff_name ?? o.staff?.name ?? "";
 
                 return (
                   <tr key={o.id}>
